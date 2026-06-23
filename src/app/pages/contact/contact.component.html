@@ -1,0 +1,71 @@
+<div class="pagehead">
+  <div class="wrap">
+    <div class="crumb">
+      <span>{{ 'contact.crumb' | translate }}</span> ›
+      <span>{{ 'contact.pageTitle' | translate }}</span>
+    </div>
+    <h1>{{ 'contact.pageTitle' | translate }}</h1>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap contact-grid">
+    <div>
+      <div class="tag">{{ 'contact.tag' | translate }}</div>
+      <h2>{{ 'contact.heading' | translate }}</h2>
+      <p class="lead" style="margin:1rem 0 1.6rem">{{ 'contact.intro' | translate }}</p>
+      <div class="cinfo">
+        <div class="row">
+          <div class="ic">📍</div>
+          <div>
+            <b>{{ 'contact.address' | translate }}</b>
+            <span>{{ 'contact.addressValue' | translate }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ic amber">✉</div>
+          <div>
+            <b>{{ 'contact.email' | translate }}</b>
+            <a href="mailto:support@credit-plus.me">support&#64;credit-plus.me</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="ic">📞</div>
+          <div>
+            <b>{{ 'contact.phone' | translate }}</b>
+            <span dir="ltr">+962 79 600 8900 / +962 79 816 2208</span>
+          </div>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:1.4rem;font-size:.95rem">{{ 'contact.social' | translate }}</p>
+    </div>
+    <form class="cform" (ngSubmit)="submit()" #f="ngForm">
+      <div class="f">
+        <label>{{ 'contact.fullName' | translate }}</label>
+        <input type="text" [(ngModel)]="form.name" name="name" required>
+      </div>
+      <div class="f">
+        <label>{{ 'contact.emailAddress' | translate }}</label>
+        <input type="email" [(ngModel)]="form.email" name="email" required>
+      </div>
+      <div class="f">
+        <label>{{ 'contact.company' | translate }}</label>
+        <input type="text" [(ngModel)]="form.company" name="company">
+      </div>
+      <div class="f">
+        <label>{{ 'contact.message' | translate }}</label>
+        <textarea [(ngModel)]="form.message" name="message" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center"
+        [disabled]="status === 'sending'">
+        {{ status === 'sending' ? (lang.t('contact.sending')) : (lang.t('contact.send')) }}
+      </button>
+      @if (status === 'sent') {
+        <p class="form-success">{{ 'contact.successMsg' | translate }}</p>
+      }
+      @if (status === 'error') {
+        <p class="form-error">{{ 'contact.errorMsg' | translate }}</p>
+      }
+    </form>
+  </div>
+</section>

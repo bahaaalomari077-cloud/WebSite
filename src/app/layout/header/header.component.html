@@ -1,0 +1,19 @@
+﻿<header class="site">
+  <div class="wrap">
+    <a class="logo" routerLink="/home">
+      <img src="logo-credit-plus-positive-cashflow-transparent.png" alt="{{ 'brand' | translate }}" class="cplogo-img">
+    </a>
+    <nav class="main" id="navmain" [class.open]="menuOpen">
+      <a routerLink="/home"       routerLinkActive="active" (click)="menuOpen=false">{{ 'nav.home'      | translate }}</a>
+      <a routerLink="/about"      routerLinkActive="active" (click)="menuOpen=false">{{ 'nav.about'     | translate }}</a>
+      <a routerLink="/suppliers"  routerLinkActive="active" (click)="menuOpen=false">{{ 'nav.suppliers' | translate }}</a>
+      <a routerLink="/buyers"     routerLinkActive="active" (click)="menuOpen=false">{{ 'nav.buyers'    | translate }}</a>
+      <a routerLink="/calculator" routerLinkActive="active" (click)="menuOpen=false">{{ 'nav.calculator'| translate }}</a>
+      <a routerLink="/contact"    routerLinkActive="active" (click)="menuOpen=false">{{ 'nav.contact'   | translate }}</a>
+    </nav>
+    <div class="hdr-cta">
+      <a class="btn btn-primary" href="https://cp.credit-plus.me/Account/Login">{{ 'nav.login' | translate }}</a>
+    </div>
+    <button class="menu-btn" (click)="menuOpen = !menuOpen">&#9776;</button>
+  </div>
+</header>

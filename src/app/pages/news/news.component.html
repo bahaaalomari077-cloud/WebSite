@@ -1,0 +1,30 @@
+﻿<div class="pagehead">
+  <div class="wrap">
+    <div class="crumb">{{ lang.t('news.crumb') }} › {{ lang.t('news.pageTitle') }}</div>
+    <div class="pagehead-row">
+      <h1>{{ lang.t('news.pageTitle') }}</h1>
+      <a class="add-btn" [routerLink]="['/admin']" [queryParams]="{type:'news'}">+ Add News</a>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:40px">
+      <div class="eyebrow">{{ lang.t('news.eyebrow') }}</div>
+      <h2>{{ lang.t('news.listTitle') }}</h2>
+    </div>
+    <div class="article-grid">
+      @for (post of posts(); track post.id) {
+        <a class="article-card" [routerLink]="['/article', post.id]">
+          <img [src]="post.img" [alt]="getTitle(post)">
+          <div class="article-body">
+            <div class="date">{{ getDate(post) }}</div>
+            <h3>{{ getTitle(post) }}</h3>
+            <div class="more">{{ lang.t('news.readMore') }}</div>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>

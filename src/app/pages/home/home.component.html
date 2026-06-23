@@ -1,0 +1,252 @@
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="welcome">● {{ 'home.welcome' | translate }}</span>
+      <h1>{{ 'home.heroTitle' | translate }}</h1>
+      <p class="sub">{{ 'home.heroSub' | translate }}</p>
+      <div class="hero-cta">
+        <a class="btn btn-amber" routerLink="/suppliers">{{ 'home.ctaSuppliers' | translate }}</a>
+        <a class="btn btn-ghost" routerLink="/buyers">{{ 'home.ctaBuyers' | translate }}</a>
+        <a class="btn btn-ghost" routerLink="/about">{{ 'home.ctaFinancialInstitutions' | translate }}</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="pill">
+        <div class="ic">⚡</div>
+        <div><b>{{ 'home.pill1Title' | translate }}</b><span>{{ 'home.pill1Sub' | translate }}</span></div>
+      </div>
+      <div class="pill">
+        <div class="ic amber">⏱</div>
+        <div><b>{{ 'home.pill2Title' | translate }}</b><span>{{ 'home.pill2Sub' | translate }}</span></div>
+      </div>
+      <div class="pill">
+        <div class="ic">📈</div>
+        <div><b>{{ 'home.pill3Title' | translate }}</b><span>{{ 'home.pill3Sub' | translate }}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="grid">
+      <div class="cell">
+        <div class="num">24–48h</div>
+        <div class="lbl">{{ 'home.stat1' | translate }}</div>
+      </div>
+      <div class="cell">
+        <div class="num">0</div>
+        <div class="lbl">{{ 'home.stat2' | translate }}</div>
+      </div>
+      <div class="cell">
+        <div class="num">100%</div>
+        <div class="lbl">{{ 'home.stat3' | translate }}</div>
+      </div>
+      <div class="cell">
+        <div class="num">3</div>
+        <div class="lbl">{{ 'home.stat4' | translate }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap center">
+    <div class="eyebrow">{{ 'brand' | translate }}</div>
+    <h2>{{ 'home.marketplaceTitle' | translate }}</h2>
+    <p class="lead" style="margin-top:1.2rem">{{ 'home.marketplaceDesc1' | translate }}</p>
+    <p class="lead" style="margin-top:1rem">{{ 'home.marketplaceDesc2' | translate }}</p>
+  </div>
+</section>
+
+<section class="section section-soft" id="home-solutions">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:46px">
+      <div class="eyebrow">{{ 'home.whatWeDoEye' | translate }}</div>
+      <h2>{{ 'home.whatWeDoTitle' | translate }}</h2>
+      <p class="lead" style="margin-top:1rem">{{ 'home.whatWeDoDesc' | translate }}</p>
+    </div>
+    <div class="cards four">
+      <a class="card link-card" routerLink="/buyers">
+        <div class="ic">🏢</div>
+        <h3>{{ 'home.cardBuyersTitle' | translate }}</h3>
+        <p>{{ 'home.cardBuyersDesc' | translate }}</p>
+      </a>
+      <a class="card link-card" routerLink="/suppliers">
+        <div class="ic amber">📦</div>
+        <h3>{{ 'home.cardSuppliersTitle' | translate }}</h3>
+        <p>{{ 'home.cardSuppliersDesc' | translate }}</p>
+      </a>
+      <a class="card link-card" routerLink="/about">
+        <div class="ic navy">🏦</div>
+        <h3>{{ 'home.cardBanksTitle' | translate }}</h3>
+        <p>{{ 'home.cardBanksDesc' | translate }}</p>
+      </a>
+      <a class="card link-card" routerLink="/buyers" fragment="dynamic-discounting">
+        <div class="ic amber">&#128184;</div>
+        <h3>{{ 'home.cardDynamicTitle' | translate }}</h3>
+        <p>{{ 'home.cardDynamicDesc' | translate }}</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split">
+    <div class="media"><img src="img-reverse.jpg" alt="{{ 'home.altReverseFactoring' | translate }}"
+        onerror="this.parentNode.style.background='linear-gradient(135deg,#1c2a8e,#22b8e6)'"></div>
+    <div>
+      <div class="tag">{{ 'brand' | translate }}</div>
+      <h2>{{ 'home.rfTitle' | translate }}</h2>
+      <p class="lead" style="margin-top:1rem">{{ 'home.rfDesc' | translate }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="wrap split">
+    <div>
+      <div class="tag">{{ 'home.suppliersTag' | translate }}</div>
+      <h2>{{ 'home.suppliersTitle' | translate }}</h2>
+      <p class="lead" style="margin-top:1rem">{{ 'home.suppliersDesc' | translate }}</p>
+      <ul class="checklist">
+        <li>{{ 'home.suppliersLi1' | translate }}</li>
+        <li>{{ 'home.suppliersLi2' | translate }}</li>
+        <li>{{ 'home.suppliersLi3' | translate }}</li>
+      </ul>
+      <a class="btn btn-primary" style="margin-top:1.6rem" routerLink="/suppliers">{{ 'home.learnMore' | translate }}</a>
+    </div>
+    <div class="media"><img src="img-suppliers.jpg" alt="{{ 'home.altSuppliers' | translate }}"
+        onerror="this.parentNode.style.background='linear-gradient(135deg,#f5a623,#ffba49)'"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split">
+    <div class="media"><img src="img-buyers.jpg" alt="{{ 'home.altBuyers' | translate }}"
+        onerror="this.parentNode.style.background='linear-gradient(135deg,#15206b,#2962ff)'"></div>
+    <div>
+      <div class="tag">{{ 'home.buyersTag' | translate }}</div>
+      <h2>{{ 'home.buyersTitle' | translate }}</h2>
+      <ul class="checklist">
+        <li>{{ 'home.buyersLi1' | translate }}</li>
+        <li>{{ 'home.buyersLi2' | translate }}</li>
+        <li>{{ 'home.buyersLi3' | translate }}</li>
+      </ul>
+      <a class="btn btn-primary" style="margin-top:1.6rem" routerLink="/buyers">{{ 'home.learnMore' | translate }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:40px">
+      <div class="eyebrow">{{ 'home.faqEye' | translate }}</div>
+      <h2>{{ 'home.faqTitle' | translate }}</h2>
+    </div>
+    <div class="faq">
+      @for (faq of faqs; track $index) {
+        <div class="faq-item" [class.open]="faqOpen === $index" (click)="toggleFaq($index)">
+          <div class="faq-q">
+            <span>{{ faq.q }}</span>
+            <span class="faq-arrow">{{ faqOpen === $index ? '-' : '+' }}</span>
+          </div>
+          @if (faqOpen === $index) {
+            <div class="faq-a">{{ faq.a }}</div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:40px">
+      <div class="eyebrow">{{ 'brand' | translate }}</div>
+      <h2>{{ 'home.newsTitle' | translate }}</h2>
+    </div>
+    <div class="article-grid">
+      @for (post of news(); track post.id) {
+        <a class="article-card" [routerLink]="['/article', post.id]">
+          <img [src]="post.img" [alt]="getTitle(post)">
+          <div class="article-body">
+            <div class="date">{{ getDate(post) }}</div>
+            <h3>{{ getTitle(post) }}</h3>
+            <div class="more">{{ 'news.readMore' | translate }}</div>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:40px">
+      <div class="eyebrow">{{ 'brand' | translate }}</div>
+      <h2>{{ 'home.articlesTitle' | translate }}</h2>
+    </div>
+    <div class="article-grid">
+      @for (post of articles(); track post.id) {
+        <a class="article-card" [routerLink]="['/article', post.id]">
+          <img [src]="post.img" [alt]="getTitle(post)">
+          <div class="article-body">
+            <div class="date">{{ getDate(post) }}</div>
+            <h3>{{ getTitle(post) }}</h3>
+            <div class="more">{{ 'articles.readMore' | translate }}</div>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <div class="tri">
+          <span>{{ 'home.triSimple' | translate }}</span>
+          <span>{{ 'home.triTransparent' | translate }}</span>
+          <span>{{ 'home.triSecure' | translate }}</span>
+        </div>
+        <h2 style="margin-top:.5rem">{{ 'home.ctaBandTitle' | translate }}</h2>
+      </div>
+      <a class="btn btn-amber" routerLink="/about">{{ 'home.ctaLearnAbout' | translate }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="wrap center">
+    <div class="eyebrow">{{ 'brand' | translate }}</div>
+    <h2>{{ 'home.partnersTitle' | translate }}</h2>
+    <div class="logos" style="margin:34px 0 56px">
+      <div class="lg"><img src="logo-hb.jpg" alt="{{ 'home.altHousingBank' | translate }}"
+          onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'Housing Bank',style:'font-weight:800;color:#15206b'}))">
+      </div>
+      <div class="lg"><img src="logo-jab.png" alt="{{ 'home.altAhliBank' | translate }}"
+          onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'Jordan Ahli Bank',style:'font-weight:800;color:#15206b'}))">
+      </div>
+    </div>
+    <div class="eyebrow">{{ 'brand' | translate }}</div>
+    <h2>{{ 'home.supportersTitle' | translate }}</h2>
+    <div class="logos" style="margin-top:34px">
+      <div class="lg"><img src="logo-qdb.png" alt="{{ 'home.altQatarDevelopmentBank' | translate }}"
+          onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'Qatar Development Bank',style:'font-weight:800;color:#15206b'}))">
+      </div>
+      <div class="lg"><img src="logo-thecore.jpg" alt="{{ 'home.altTheCore' | translate }}"
+          onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'The Core',style:'font-weight:800;color:#15206b'}))">
+      </div>
+      <div class="lg"><img src="logo-jopacc-join.png" alt="{{ 'home.altJopacc' | translate }}"
+          onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'JOPACC',style:'font-weight:800;color:#15206b'}))">
+      </div>
+      <div class="lg"><img src="logo-giz.png" alt="{{ 'home.altGiz' | translate }}"
+          onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'GIZ',style:'font-weight:800;color:#15206b'}))">
+      </div>
+    </div>
+  </div>
+</section>

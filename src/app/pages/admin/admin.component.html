@@ -1,0 +1,49 @@
+<div class="admin-wrap">
+  <h1>Admin Panel</h1>
+
+  @if (showTabs) {
+    <div class="tabs">
+      <button [class.active]="tab==='news'"     (click)="tab='news'">News</button>
+      <button [class.active]="tab==='articles'" (click)="tab='articles'">Articles</button>
+    </div>
+  }
+
+  <form (ngSubmit)="submit()" class="admin-form">
+    <h2>Add {{ tab === 'news' ? 'News' : 'Article' }}</h2>
+
+    <div class="row">
+      <label>ID (unique, no spaces)<input [(ngModel)]="form.id" name="id" required placeholder="e.g. my-news-2026"></label>
+      <label>Image filename<input [(ngModel)]="form.img" name="img" placeholder="e.g. news-photo.jpg"></label>
+    </div>
+
+    <div class="row">
+      <label>Date (English)<input [(ngModel)]="form.date_en" name="date_en" placeholder="e.g. June 23, 2026"></label>
+      <label>Date (Arabic)<input [(ngModel)]="form.date_ar" name="date_ar" placeholder="e.g. 23 حزيران 2026"></label>
+    </div>
+
+    <label>Title (English)<input [(ngModel)]="form.title_en" name="title_en" required placeholder="English title"></label>
+    <label>Title (Arabic)<input [(ngModel)]="form.title_ar" name="title_ar" required placeholder="العنوان بالعربي"></label>
+
+    <h3>Paragraphs</h3>
+    @for (block of form.blocks_en; track $index) {
+      <div class="block-row">
+        <div class="block-pair">
+          <textarea [(ngModel)]="form.blocks_en[$index].text" [name]="'ben_'+$index" placeholder="Paragraph {{ $index+1 }} (English)" rows="3"></textarea>
+          <textarea [(ngModel)]="form.blocks_ar[$index].text" [name]="'bar_'+$index" placeholder="الفقرة {{ $index+1 }} (عربي)" rows="3" dir="rtl"></textarea>
+        </div>
+        @if (form.blocks_en.length > 1) {
+          <button type="button" class="remove-btn" (click)="removeBlock($index)">✕</button>
+        }
+      </div>
+    }
+
+    <button type="button" class="add-btn" (click)="addBlock()">+ Add Paragraph</button>
+
+    @if (status() === 'done')  { <p class="msg success">Saved successfully!</p> }
+    @if (status() === 'error') { <p class="msg error">Error saving. Check backend.</p> }
+
+    <button type="submit" class="save-btn" [disabled]="status()==='saving'">
+      {{ status() === 'saving' ? 'Saving...' : 'Save' }}
+    </button>
+  </form>
+</div>

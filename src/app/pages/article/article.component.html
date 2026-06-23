@@ -1,0 +1,37 @@
+﻿<div class="pagehead article-head">
+  <div class="wrap">
+    <div class="crumb">
+      {{ lang.t('article.crumb') }} › {{ article.crumb }}
+    </div>
+    <h1>{{ article.title }}</h1>
+    <div class="article-meta">{{ article.meta }}</div>
+  </div>
+</div>
+
+<section class="section article-page">
+  <div class="article-wrap">
+    <img class="article-hero-img" [src]="article.image" [alt]="article.title">
+
+    <div class="article-body">
+      @for (block of article.blocks; track $index) {
+        @if (block.type === 'p') {
+          <p>{{ block.text }}</p>
+        }
+        @if (block.type === 'h') {
+          <h2>{{ block.text }}</h2>
+        }
+        @if (block.type === 'ul') {
+          <ul>
+            @for (item of block.items; track $index) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+        }
+      }
+    </div>
+
+    <div class="article-actions">
+      <a class="btn btn-outline" routerLink="/home">{{ lang.t('article.backHome') }}</a>
+    </div>
+  </div>
+</section>
