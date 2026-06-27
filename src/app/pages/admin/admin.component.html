@@ -2,48 +2,77 @@
   <h1>Admin Panel</h1>
 
   @if (showTabs) {
-    <div class="tabs">
-      <button [class.active]="tab==='news'"     (click)="tab='news'">News</button>
-      <button [class.active]="tab==='articles'" (click)="tab='articles'">Articles</button>
+    <div class="admin-actions">
+      <button type="button" [class.active]="tab === 'news'" (click)="selectType('news')">+ Add News</button>
+      <button type="button" [class.active]="tab === 'articles'" (click)="selectType('articles')">+ Add Article</button>
     </div>
   }
 
-  <form (ngSubmit)="submit()" class="admin-form">
-    <h2>Add {{ tab === 'news' ? 'News' : 'Article' }}</h2>
-
-    <div class="row">
-      <label>ID (unique, no spaces)<input [(ngModel)]="form.id" name="id" required placeholder="e.g. my-news-2026"></label>
-      <label>Image filename<input [(ngModel)]="form.img" name="img" placeholder="e.g. news-photo.jpg"></label>
-    </div>
-
-    <div class="row">
-      <label>Date (English)<input [(ngModel)]="form.date_en" name="date_en" placeholder="e.g. June 23, 2026"></label>
-      <label>Date (Arabic)<input [(ngModel)]="form.date_ar" name="date_ar" placeholder="e.g. 23 حزيران 2026"></label>
-    </div>
-
-    <label>Title (English)<input [(ngModel)]="form.title_en" name="title_en" required placeholder="English title"></label>
-    <label>Title (Arabic)<input [(ngModel)]="form.title_ar" name="title_ar" required placeholder="العنوان بالعربي"></label>
-
-    <h3>Paragraphs</h3>
-    @for (block of form.blocks_en; track $index) {
-      <div class="block-row">
-        <div class="block-pair">
-          <textarea [(ngModel)]="form.blocks_en[$index].text" [name]="'ben_'+$index" placeholder="Paragraph {{ $index+1 }} (English)" rows="3"></textarea>
-          <textarea [(ngModel)]="form.blocks_ar[$index].text" [name]="'bar_'+$index" placeholder="الفقرة {{ $index+1 }} (عربي)" rows="3" dir="rtl"></textarea>
+  @if (selectedType) {
+    <section class="admin-list">
+      <div class="list-head">
+        <div>
+          <h2>{{ tab === 'news' ? 'News List' : 'Articles List' }}</h2>
+          <p>{{ posts().length }} item{{ posts().length === 1 ? '' : 's' }} from database</p>
         </div>
-        @if (form.blocks_en.length > 1) {
-          <button type="button" class="remove-btn" (click)="removeBlock($index)">✕</button>
-        }
+        <button type="button" class="new-btn" (click)="startAdd()">New {{ tab === 'news' ? 'News' : 'Article' }}</button>
       </div>
-    }
 
-    <button type="button" class="add-btn" (click)="addBlock()">+ Add Paragraph</button>
+      @if (posts().length) {
+        <div class="post-table">
+          @for (post of posts(); track post.id) {
+            <div class="post-row">
+              <img [src]="post.img" [alt]="post.title_en || post.id">
+              <div class="post-main">
+                <strong>{{ post.title_en }}</strong>
+                <span>{{ post.date_en }} · {{ post.id }}</span>
+              </div>
+              <button type="button" class="edit-btn" (click)="editPost(post)">Update</button>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="empty-list">No items found.</p>
+      }
+    </section>
 
-    @if (status() === 'done')  { <p class="msg success">Saved successfully!</p> }
-    @if (status() === 'error') { <p class="msg error">Error saving. Check backend.</p> }
+    <form (ngSubmit)="submit()" class="admin-form">
+      <h2>{{ editingId ? 'Update' : 'Add' }} {{ tab === 'news' ? 'News' : 'Article' }}</h2>
 
-    <button type="submit" class="save-btn" [disabled]="status()==='saving'">
-      {{ status() === 'saving' ? 'Saving...' : 'Save' }}
-    </button>
-  </form>
+      <div class="row">
+        <label>ID (unique, no spaces)<input [(ngModel)]="form.id" name="id" required [readonly]="!!editingId" placeholder="e.g. my-news-2026"></label>
+        <label>Image filename<input [(ngModel)]="form.img" name="img" required pattern=".+\.(jpg|jpeg|png|webp|svg)$" placeholder="e.g. news-photo.jpg"></label>
+      </div>
+
+      <div class="row">
+        <label>Date (English)<input [(ngModel)]="form.date_en" name="date_en" required placeholder="e.g. June 23, 2026"></label>
+        <label>Date (Arabic)<input [(ngModel)]="form.date_ar" name="date_ar" required placeholder="e.g. 23 حزيران 2026" dir="rtl"></label>
+      </div>
+
+      <label>Title (English)<input [(ngModel)]="form.title_en" name="title_en" required placeholder="English title"></label>
+      <label>Title (Arabic)<input [(ngModel)]="form.title_ar" name="title_ar" required placeholder="العنوان بالعربي" dir="rtl"></label>
+
+      <h3>Paragraphs</h3>
+      @for (block of form.blocks_en; track $index) {
+        <div class="block-row">
+          <div class="block-pair">
+            <textarea [(ngModel)]="form.blocks_en[$index].text" [name]="'ben_' + $index" placeholder="Paragraph {{ $index + 1 }} (English)" rows="3"></textarea>
+            <textarea [(ngModel)]="form.blocks_ar[$index].text" [name]="'bar_' + $index" placeholder="الفقرة {{ $index + 1 }} (عربي)" rows="3" dir="rtl"></textarea>
+          </div>
+          @if (form.blocks_en.length > 1) {
+            <button type="button" class="remove-btn" (click)="removeBlock($index)">x</button>
+          }
+        </div>
+      }
+
+      <button type="button" class="add-btn" (click)="addBlock()">+ Add Paragraph</button>
+
+      @if (status() === 'done')  { <p class="msg success">Saved successfully!</p> }
+      @if (status() === 'error') { <p class="msg error">Error saving. Check backend and required fields.</p> }
+
+      <button type="submit" class="save-btn" [disabled]="status() === 'saving'">
+        {{ status() === 'saving' ? 'Saving...' : (editingId ? 'Update' : 'Save') }}
+      </button>
+    </form>
+  }
 </div>

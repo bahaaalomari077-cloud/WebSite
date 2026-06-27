@@ -16,6 +16,12 @@ interface PostForm {
   blocks_ar: Block[];
 }
 
+interface AdminPost extends Omit<PostForm, 'blocks_en' | 'blocks_ar'> {
+  blocks_en?: Block[] | null;
+  blocks_ar?: Block[] | null;
+  sort_order?: number;
+}
+
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -24,11 +30,14 @@ interface PostForm {
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent {
-  private http   = inject(HttpClient);
-  private route  = inject(ActivatedRoute);
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
 
   tab: 'news' | 'articles' = 'news';
-  status = signal<'idle' | 'saving' | 'done' | 'error'>('idle');
+  selectedType: 'news' | 'articles' | null = null;
+  editingId: string | null = null;
+  status = signal<'idle' | 'loading' | 'saving' | 'done' | 'error'>('idle');
+  posts = signal<AdminPost[]>([]);
 
   form: PostForm = this.emptyForm();
 
@@ -36,9 +45,53 @@ export class AdminComponent {
 
   constructor() {
     this.route.queryParams.subscribe(p => {
-      if (p['type'] === 'articles') { this.tab = 'articles'; this.showTabs = false; }
-      else if (p['type'] === 'news') { this.tab = 'news';     this.showTabs = false; }
+      if (p['type'] === 'articles') { this.selectType('articles'); this.showTabs = false; }
+      else if (p['type'] === 'news') { this.selectType('news'); this.showTabs = false; }
       else { this.showTabs = true; }
+    });
+  }
+
+  selectType(type: 'news' | 'articles') {
+    this.tab = type;
+    this.selectedType = type;
+    this.startAdd();
+    this.loadPosts();
+  }
+
+  startAdd() {
+    this.editingId = null;
+    this.status.set('idle');
+    this.form = this.emptyForm();
+  }
+
+  editPost(post: AdminPost) {
+    this.editingId = post.id;
+    this.status.set('idle');
+    this.form = {
+      id: post.id,
+      img: post.img || '',
+      date_en: post.date_en || '',
+      date_ar: post.date_ar || '',
+      title_en: post.title_en || '',
+      title_ar: post.title_ar || '',
+      blocks_en: this.normalizeBlocks(post.blocks_en),
+      blocks_ar: this.normalizeBlocks(post.blocks_ar)
+    };
+  }
+
+  loadPosts() {
+    if (!this.selectedType) return;
+
+    this.status.set('loading');
+    this.http.get<AdminPost[]>(`/api/${this.tab}`).subscribe({
+      next: data => {
+        this.posts.set(data);
+        this.status.set('idle');
+      },
+      error: () => {
+        this.posts.set([]);
+        this.status.set('error');
+      }
     });
   }
 
@@ -64,9 +117,21 @@ export class AdminComponent {
   submit() {
     this.status.set('saving');
     const endpoint = `/api/${this.tab}`;
-    this.http.post(endpoint, this.form).subscribe({
-      next: () => { this.status.set('done'); this.form = this.emptyForm(); },
+    const request = this.editingId
+      ? this.http.put(`${endpoint}/${encodeURIComponent(this.editingId)}`, this.form)
+      : this.http.post(endpoint, this.form);
+
+    request.subscribe({
+      next: () => {
+        this.status.set('done');
+        this.startAdd();
+        this.loadPosts();
+      },
       error: () => this.status.set('error')
     });
+  }
+
+  private normalizeBlocks(blocks?: Block[] | null): Block[] {
+    return blocks?.length ? blocks.map(block => ({ text: block.text || '' })) : [{ text: '' }];
   }
 }
