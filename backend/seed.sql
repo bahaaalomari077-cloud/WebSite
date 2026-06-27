@@ -31,9 +31,9 @@ ALTER TABLE articles ADD COLUMN IF NOT EXISTS blocks_ar JSONB;
 
 -- Seed news
 INSERT INTO news (id, img, date_en, date_ar, title_en, title_ar, sort_order) VALUES
-  ('hb',      'news-hb.jpg',      'July 26, 2025',   '26 تموز 2025',   'Proud to Power Housing Bank''s New Supply Chain Finance Program',                          'نفخر بتشغيل برنامج تمويل سلسلة التوريد الجديد لبنك الإسكان',          1),
-  ('poc',     'news-poc.jpg',     '2025',            '2025',            'JOPACC & Credit Plus Complete a Successful Proof of Concept with Housing Bank',           'جوباك وكريدت بلس تكملان إثبات مفهوم ناجح مع بنك الإسكان',            2),
-  ('seminar', 'news-seminar.jpg', 'April 26, 2026',  '26 نيسان 2026',  'Supply Chain Finance Session with the Association of Banks in Jordan',                   'جلسة تمويل سلسلة التوريد مع جمعية البنوك في الأردن',                  3)
+  ('hb',      'news-hb.jpg',      'July 26, 2025',   '26 تموز 2025',   'Proud to Power Housing Bank''s New Supply Chain Finance Program',                'نفخر بتشغيل برنامج تمويل سلسلة التوريد الجديد لبنك الإسكان', 1),
+  ('poc',     'news-poc.jpg',     '2025',            '2025',           'JOPACC & Credit Plus Complete a Successful Proof of Concept with Housing Bank', 'جوباك وكريدت بلس تكملان إثبات مفهوم ناجح مع بنك الإسكان',   2),
+  ('seminar', 'news-seminar.jpg', 'April 26, 2026',  '26 نيسان 2026',  'Supply Chain Finance Session with the Association of Banks in Jordan',          'جلسة تمويل سلسلة التوريد مع جمعية البنوك في الأردن',         3)
 ON CONFLICT (id) DO NOTHING;
 
 -- Seed articles
