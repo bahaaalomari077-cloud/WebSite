@@ -1,7 +1,7 @@
 ﻿import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
-import { PostsService, Post } from '../../services/posts.service';
+import { PostsService, Post, imageSrc } from '../../services/posts.service';
 import { SeoService } from '../../services/seo.service';
 
 @Component({
@@ -31,4 +31,5 @@ export class NewsComponent {
 
   getTitle(post: Post) { return this.lang.currentLang() === 'ar' ? post.title_ar : post.title_en; }
   getDate(post: Post)  { return this.lang.currentLang() === 'ar' ? post.date_ar  : post.date_en;  }
+  imageSrc(post: Post) { return imageSrc(post.img); }
 }

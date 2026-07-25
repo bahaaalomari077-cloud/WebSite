@@ -70,7 +70,12 @@
               "buildTarget": "credit-plus-angular:build:development"
             }
           },
-          "defaultConfiguration": "development",\r\n          "options": {\r\n            "proxyConfig": "proxy.conf.json"\r\n          }\r\n        },\r\n        "extract-i18n": {
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          }
+        },
+        "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
         },
         "test": {

@@ -1,19 +1,19 @@
 ﻿<div class="pagehead article-head">
   <div class="wrap">
     <div class="crumb">
-      {{ lang.t('article.crumb') }} › {{ article.crumb }}
+      {{ lang.t('article.crumb') }} › {{ article().crumb }}
     </div>
-    <h1>{{ article.title }}</h1>
-    <div class="article-meta">{{ article.meta }}</div>
+    <h1>{{ article().title }}</h1>
+    <div class="article-meta">{{ article().meta }}</div>
   </div>
 </div>
 
 <section class="section article-page">
   <div class="article-wrap">
-    <img class="article-hero-img" [src]="article.image" [alt]="article.title">
+    <img class="article-hero-img" [src]="article().image" [alt]="article().title">
 
     <div class="article-body">
-      @for (block of article.blocks; track $index) {
+      @for (block of article().blocks; track $index) {
         @if (block.type === 'p') {
           <p>{{ block.text }}</p>
         }

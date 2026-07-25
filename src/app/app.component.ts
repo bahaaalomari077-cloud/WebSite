@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { TopbarComponent } from './layout/topbar/topbar.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
@@ -13,4 +13,11 @@ import { FooterComponent } from './layout/footer/footer.component';
 })
 export class AppComponent {
   title = 'credit-plus-angular';
+
+  constructor(private router: Router) {}
+
+  get isAdminRoute(): boolean {
+    const url = this.router.url;
+    return url.startsWith('/admin') || url.startsWith('/login');
+  }
 }

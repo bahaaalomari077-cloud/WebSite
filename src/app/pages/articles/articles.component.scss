@@ -62,7 +62,7 @@ h3 {
 .article-card {
   background: #fff;
   border: 1px solid rgba(20, 34, 92, .08);
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 18px 38px rgba(16, 29, 86, .1);
   color: inherit;
   overflow: hidden;
@@ -71,11 +71,9 @@ h3 {
 }
 
 .article-card img {
-  aspect-ratio: 3 / 2;
   background: #eef2ff;
   display: block;
-  height: auto;
-  max-width: 1000px;
+  height: 190px;
   object-fit: cover;
   width: 100%;
 }

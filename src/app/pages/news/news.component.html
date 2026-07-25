@@ -16,7 +16,7 @@
     <div class="article-grid">
       @for (post of posts(); track post.id) {
         <a class="article-card" [routerLink]="['/article', post.id]">
-          <img [src]="post.img" [alt]="getTitle(post)">
+          <img [src]="imageSrc(post)" [alt]="getTitle(post)">
           <div class="article-body">
             <div class="date">{{ getDate(post) }}</div>
             <h3>{{ getTitle(post) }}</h3>

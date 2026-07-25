@@ -9,6 +9,8 @@ import { ArticleComponent } from './pages/article/article.component';
 import { NewsComponent } from './pages/news/news.component';
 import { ArticlesComponent } from './pages/articles/articles.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -21,6 +23,7 @@ export const routes: Routes = [
   { path: 'news', component: NewsComponent },
   { path: 'articles', component: ArticlesComponent },
   { path: 'article/:id', component: ArticleComponent },
-  { path: 'admin', component: AdminComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'home' }
 ];

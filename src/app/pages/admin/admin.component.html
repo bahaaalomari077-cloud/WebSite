@@ -15,19 +15,23 @@
           <h2>{{ tab === 'news' ? 'News List' : 'Articles List' }}</h2>
           <p>{{ posts().length }} item{{ posts().length === 1 ? '' : 's' }} from database</p>
         </div>
-        <button type="button" class="new-btn" (click)="startAdd()">New {{ tab === 'news' ? 'News' : 'Article' }}</button>
+        <div class="head-actions">
+          <button type="button" class="new-btn" (click)="startAdd()">New {{ tab === 'news' ? 'News' : 'Article' }}</button>
+          <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+        </div>
       </div>
 
       @if (posts().length) {
         <div class="post-table">
           @for (post of posts(); track post.id) {
             <div class="post-row">
-              <img [src]="post.img" [alt]="post.title_en || post.id">
+              <img [src]="imageSrc(post.img)" [alt]="post.title_en || post.id">
               <div class="post-main">
                 <strong>{{ post.title_en }}</strong>
                 <span>{{ post.date_en }} · {{ post.id }}</span>
               </div>
               <button type="button" class="edit-btn" (click)="editPost(post)">Update</button>
+              <button type="button" class="delete-btn" (click)="deletePost(post)">Delete</button>
             </div>
           }
         </div>
@@ -41,7 +45,14 @@
 
       <div class="row">
         <label>ID (unique, no spaces)<input [(ngModel)]="form.id" name="id" required [readonly]="!!editingId" placeholder="e.g. my-news-2026"></label>
-        <label>Image filename<input [(ngModel)]="form.img" name="img" required pattern=".+\.(jpg|jpeg|png|webp|svg)$" placeholder="e.g. news-photo.jpg"></label>
+        <label class="image-field">
+          Image
+          <input type="file" accept=".jpg,.jpeg,.png,.webp,.svg,image/*" (change)="uploadImage($event)">
+          <input class="image-path" [(ngModel)]="form.img" name="img" required readonly>
+          @if (form.img) {
+            <img class="upload-preview" [src]="imageSrc(form.img)" alt="Upload preview">
+          }
+        </label>
       </div>
 
       <div class="row">
@@ -68,7 +79,7 @@
       <button type="button" class="add-btn" (click)="addBlock()">+ Add Paragraph</button>
 
       @if (status() === 'done')  { <p class="msg success">Saved successfully!</p> }
-      @if (status() === 'error') { <p class="msg error">Error saving. Check backend and required fields.</p> }
+      @if (status() === 'error') { <p class="msg error">{{ errorMessage() || 'Error saving. Check backend and required fields.' }}</p> }
 
       <button type="submit" class="save-btn" [disabled]="status() === 'saving'">
         {{ status() === 'saving' ? 'Saving...' : (editingId ? 'Update' : 'Save') }}

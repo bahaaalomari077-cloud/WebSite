@@ -1,0 +1,23 @@
+<div class="login-wrap">
+  <div class="login-card">
+    <h1>Admin Login</h1>
+
+    @if (error()) {
+      <div class="error">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="login()">
+      <label>
+        Username
+        <input [(ngModel)]="username" name="username" required autocomplete="username">
+      </label>
+      <label>
+        Password
+        <input [(ngModel)]="password" name="password" type="password" required autocomplete="current-password">
+      </label>
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Signing in...' : 'Sign in' }}
+      </button>
+    </form>
+  </div>
+</div>
