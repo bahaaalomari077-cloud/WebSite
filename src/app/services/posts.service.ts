@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { forkJoin, map } from 'rxjs';
+import { ApiService, assetUrl } from './api.service';
 
 export interface Post {
   id: string;
@@ -21,15 +21,15 @@ export interface PostBlock {
 }
 
 export function imageSrc(img: string): string {
-  return img?.startsWith('http') || img?.startsWith('/') ? img : `/${img}`;
+  return assetUrl(img);
 }
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
-  private http = inject(HttpClient);
+  private api = inject(ApiService);
 
-  getNews()     { return this.http.get<Post[]>('/api/news'); }
-  getArticles() { return this.http.get<Post[]>('/api/articles'); }
+  getNews()     { return this.api.get<Post[]>('/api/news'); }
+  getArticles() { return this.api.get<Post[]>('/api/articles'); }
 
   getPost(id: string) {
     return forkJoin([this.getNews(), this.getArticles()]).pipe(

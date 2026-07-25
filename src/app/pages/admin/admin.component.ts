@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { imageSrc } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 interface Block { text: string; }
 
@@ -32,7 +33,7 @@ interface AdminPost extends Omit<PostForm, 'blocks_en' | 'blocks_ar'> {
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent {
-  private http = inject(HttpClient);
+  private api = inject(ApiService);
   private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
 
@@ -93,7 +94,7 @@ export class AdminComponent {
 
     this.errorMessage.set('');
     this.status.set('saving');
-    this.http.delete(`/api/${this.tab}/${encodeURIComponent(post.id)}`).subscribe({
+    this.api.delete(`/api/${this.tab}/${encodeURIComponent(post.id)}`).subscribe({
       next: () => {
         this.status.set('done');
         if (this.editingId === post.id) { this.startAdd(); }
@@ -110,7 +111,7 @@ export class AdminComponent {
     if (!this.selectedType) return;
 
     this.status.set('loading');
-    this.http.get<AdminPost[]>(`/api/${this.tab}`).subscribe({
+    this.api.get<AdminPost[]>(`/api/${this.tab}`).subscribe({
       next: data => {
         this.posts.set(data);
         this.status.set('idle');
@@ -156,8 +157,8 @@ export class AdminComponent {
     this.status.set('saving');
     const endpoint = `/api/${this.tab}`;
     const request = this.editingId
-      ? this.http.put(`${endpoint}/${encodeURIComponent(this.editingId)}`, payload)
-      : this.http.post(endpoint, payload);
+      ? this.api.put(`${endpoint}/${encodeURIComponent(this.editingId)}`, payload)
+      : this.api.post(endpoint, payload);
 
     request.subscribe({
       next: () => {
@@ -189,7 +190,7 @@ export class AdminComponent {
     this.status.set('saving');
     this.errorMessage.set('');
 
-    this.http.post<{ img: string }>('/api/upload', data).subscribe({
+    this.api.post<{ img: string }>('/api/upload', data).subscribe({
       next: result => {
         this.form.img = result.img;
         this.status.set('idle');

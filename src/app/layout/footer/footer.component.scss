@@ -38,6 +38,12 @@ footer.site {
     max-width: 280px;
     color: #9aa6dd;
   }
+
+  .footer-brand {
+    min-width: 0;
+    max-width: 320px;
+    justify-self: start;
+  }
 }
 
 .flogo {
@@ -45,7 +51,30 @@ footer.site {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
+
+  .logo {
+    display: block;
+    width: 124px;
+    height: 50px;
+    overflow: hidden;
+  }
+}
+
+html[dir="rtl"] footer.site {
+  .footer-brand {
+    text-align: right;
+    justify-self: end;
+  }
+
+  .flogo {
+    justify-content: flex-end;
+  }
+
+  .desc {
+    margin-right: 0;
+    margin-left: auto;
+  }
 }
 
 footer {
@@ -54,8 +83,10 @@ footer {
   }
 
   .footer-logo-img {
-    height: 64px;
-    width: auto;
+    display: block;
+    width: 124px;
+    height: auto;
+    transform: translateY(-18px);
   }
 
   .contact-icon {

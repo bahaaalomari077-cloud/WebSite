@@ -8,11 +8,14 @@ using NpgsqlTypes;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
-builder.WebHost.UseUrls($"http://localhost:{port}");
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? new[] { "http://localhost:4200" };
+var allowedOrigins = GetAllowedOrigins(builder.Configuration);
+var useCrossSiteCookies = IsEnabled("CROSS_SITE_COOKIES", builder.Configuration["Auth:CrossSiteCookies"]);
 
 builder.Services.AddCors(options =>
 {
@@ -28,9 +31,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.Cookie.Name = "cp-admin";
         options.LoginPath = "/api/admin/login";
-        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SameSite = useCrossSiteCookies ? SameSiteMode.None : SameSiteMode.Lax;
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SecurePolicy = useCrossSiteCookies ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest;
         options.SlidingExpiration = true;
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
     });
@@ -56,7 +59,14 @@ if (Directory.Exists(publicPath))
     });
 }
 
-await EnsureDatabase(app.Services.GetRequiredService<NpgsqlDataSource>());
+try
+{
+    await EnsureDatabase(app.Services.GetRequiredService<NpgsqlDataSource>());
+}
+catch (Exception ex)
+{
+    app.Logger.LogWarning(ex, "Database initialization failed; continuing without database-backed endpoints");
+}
 
 app.MapGet("/", () => Results.Ok(new { message = "Credit Plus ASP.NET backend is running" }));
 
@@ -136,7 +146,7 @@ app.MapGet("/api/news", async (NpgsqlDataSource dataSource) =>
     catch (Exception ex)
     {
         app.Logger.LogError(ex, "Failed to load news");
-        return Results.Problem("Database error", statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -161,7 +171,7 @@ app.MapPost("/api/news", [Authorize] async (PostRequest post, NpgsqlDataSource d
             return Results.BadRequest(new { error = "ID already exists. Use a different ID." });
         }
 
-        return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -181,7 +191,7 @@ app.MapPut("/api/news/{id}", [Authorize] async (string id, PostRequest post, Npg
     catch (Exception ex)
     {
         app.Logger.LogError(ex, "Failed to update news post");
-        return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -194,7 +204,7 @@ app.MapGet("/api/articles", async (NpgsqlDataSource dataSource) =>
     catch (Exception ex)
     {
         app.Logger.LogError(ex, "Failed to load articles");
-        return Results.Problem("Database error", statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -219,7 +229,7 @@ app.MapPost("/api/articles", [Authorize] async (PostRequest post, NpgsqlDataSour
             return Results.BadRequest(new { error = "ID already exists. Use a different ID." });
         }
 
-        return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -239,7 +249,7 @@ app.MapPut("/api/articles/{id}", [Authorize] async (string id, PostRequest post,
     catch (Exception ex)
     {
         app.Logger.LogError(ex, "Failed to update article");
-        return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -253,7 +263,7 @@ app.MapDelete("/api/news/{id}", [Authorize] async (string id, NpgsqlDataSource d
     catch (Exception ex)
     {
         app.Logger.LogError(ex, "Failed to delete news post");
-        return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -267,7 +277,7 @@ app.MapDelete("/api/articles/{id}", [Authorize] async (string id, NpgsqlDataSour
     catch (Exception ex)
     {
         app.Logger.LogError(ex, "Failed to delete article");
-        return Results.Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 });
 
@@ -291,6 +301,26 @@ static string BuildConnectionString(IConfiguration configuration)
     };
 
     return builder.ConnectionString;
+}
+
+static string[] GetAllowedOrigins(IConfiguration configuration)
+{
+    var fromEnv = Environment.GetEnvironmentVariable("CORS_ALLOWED_ORIGINS");
+    if (!string.IsNullOrWhiteSpace(fromEnv))
+    {
+        return fromEnv
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToArray();
+    }
+
+    return configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+        ?? new[] { "http://localhost:4200" };
+}
+
+static bool IsEnabled(string envName, string? configValue)
+{
+    var value = Environment.GetEnvironmentVariable(envName) ?? configValue;
+    return bool.TryParse(value, out var enabled) && enabled;
 }
 
 static async Task EnsureDatabase(NpgsqlDataSource dataSource)
