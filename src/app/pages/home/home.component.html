@@ -68,22 +68,22 @@
     </div>
     <div class="cards four">
       <a class="card link-card" routerLink="/buyers">
-        <div class="ic">🏢</div>
+        <div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 21V5l7-3 7 3v16M9 8h2m2 0h2M9 12h2m2 0h2M9 16h2m2 0h2M3 21h18"/></svg></div>
         <h3>{{ 'home.cardBuyersTitle' | translate }}</h3>
         <p>{{ 'home.cardBuyersDesc' | translate }}</p>
       </a>
       <a class="card link-card" routerLink="/suppliers">
-        <div class="ic amber">📦</div>
+        <div class="ic amber" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4-8-4Zm0 0v10l8 4 8-4V7M12 11v10"/></svg></div>
         <h3>{{ 'home.cardSuppliersTitle' | translate }}</h3>
         <p>{{ 'home.cardSuppliersDesc' | translate }}</p>
       </a>
       <a class="card link-card" routerLink="/about">
-        <div class="ic navy">🏦</div>
+        <div class="ic navy" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 9 9-6 9 6M5 10v8m4-8v8m6-8v8m4-8v8M3 21h18M2 9h20"/></svg></div>
         <h3>{{ 'home.cardBanksTitle' | translate }}</h3>
         <p>{{ 'home.cardBanksDesc' | translate }}</p>
       </a>
       <a class="card link-card" routerLink="/buyers" fragment="dynamic-discounting">
-        <div class="ic amber">&#128184;</div>
+        <div class="ic amber" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM8 12h.01M16 12h.01M12 9c-1.4 0-2.5 1.3-2.5 3s1.1 3 2.5 3 2.5-1.3 2.5-3S13.4 9 12 9Z"/></svg></div>
         <h3>{{ 'home.cardDynamicTitle' | translate }}</h3>
         <p>{{ 'home.cardDynamicDesc' | translate }}</p>
       </a>
@@ -145,7 +145,7 @@
       <h2>{{ 'home.faqTitle' | translate }}</h2>
     </div>
     <div class="faq">
-      @for (faq of faqs; track $index) {
+      @for (faq of faqs(); track $index) {
         <div class="faq-item" [class.open]="faqOpen === $index" (click)="toggleFaq($index)">
           <div class="faq-q">
             <span>{{ faq.q }}</span>

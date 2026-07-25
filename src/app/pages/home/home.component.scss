@@ -108,6 +108,16 @@ html[dir="rtl"] .hero-card .pill b {
   font-family: var(--font-ar);
 }
 
+.ic svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .stats {
   background: #fff;
   margin-top: -46px;

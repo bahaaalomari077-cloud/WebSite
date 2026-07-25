@@ -206,6 +206,7 @@
 .cp-calc .step-body{font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px}
 .cp-calc .step-form{font-family:var(--mono);font-size:11.5px;background:#EEF2FF;border:1px solid var(--line);border-radius:10px;padding:12px 14px;line-height:1.9;color:var(--ink);margin:8px 0;white-space:pre-wrap;direction:ltr;text-align:left;unicode-bidi:embed}
 .cp-calc .step-form .hi{color:var(--n);font-weight:700}
+.cp-calc .step-form .calc-equation{display:inline-block;direction:ltr;unicode-bidi:isolate}
 .cp-calc .step-form .cm{color:var(--mute);font-size:10.5px}
 .cp-calc .step-nav{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
 .cp-calc .step-wrap{padding-bottom:22px}

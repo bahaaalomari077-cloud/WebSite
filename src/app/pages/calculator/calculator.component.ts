@@ -79,7 +79,7 @@ export class CalculatorComponent implements AfterViewInit, OnDestroy {
     var ddSteps=[
       {t:ct('steps.dd.step1.title'), ti:ct('steps.dd.step1.subtitle'), fn:function(v,r){
         return ct('steps.dd.step1.body', {amount: mn('JOD '+N(v.F)), days: mn(v.T), discount: mn(P1(v.d)), payDay: mn(v.P), depositRate: mn(P1(v.dep))}) +
-        '<div class="step-form">'+ct('steps.dd.step1.inputs', {amount: mn('JOD '+N(v.F)), discount: mn(P1(v.d)), payDay: mn(v.P), dueDays: mn(v.T), daysEarly: mn(r.dE)})+'</div>';
+        '<div class="step-form">'+ct('steps.dd.step1.inputs', {amount: mn('JOD '+N(v.F)), discount: mn(P1(v.d)), payDay: mn(v.P), dueDays: mn(v.T), depositRate: mn(P1(v.dep)), daysEarly: mn(r.dE)})+'</div>';
       }},
       {t:ct('steps.dd.step2.title'), ti:ct('steps.dd.step2.subtitle'), fn:function(v,r){
         return ct('steps.dd.step2.body', {amount: mn('JOD '+N(r.co)), gain: mn('JOD '+N(r.gain))}) +
@@ -149,7 +149,7 @@ export class CalculatorComponent implements AfterViewInit, OnDestroy {
       document.getElementById('ddv-F').textContent='JOD '+N(v.F);
       document.getElementById('ddv-d').textContent=P1(v.d);
       document.getElementById('ddv-T').textContent=v.T+'d';
-      document.getElementById('ddv-P').textContent=(curLang==='ar'?ct('steps.day')+' '+mn(v.P):ct('steps.day')+' '+v.P);
+      document.getElementById('ddv-P').innerHTML=ct('steps.day')+' '+mn(v.P);
       document.getElementById('ddv-dep').textContent=P1(v.dep);
       document.getElementById('dd-st').textContent=steps[dds].t;
       document.getElementById('dd-sc').innerHTML='<div class="step-title">'+steps[dds].ti+'</div>'+steps[dds].fn(v,r);

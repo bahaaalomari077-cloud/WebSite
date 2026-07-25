@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
@@ -19,7 +19,10 @@ export class HomeComponent {
   currentLang = this.langSvc.currentLang;
   faqOpen: number | null = null;
 
-  faqs = this.langSvc.get('home.faqs');
+  faqs = computed(() => {
+    this.currentLang();
+    return this.langSvc.get('home.faqs');
+  });
   news     = signal<Post[]>([]);
   articles = signal<Post[]>([]);
 

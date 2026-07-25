@@ -420,7 +420,7 @@ export const ar: typeof en = {
           title: 'الخطوة 1 من 5 - ما الذي تقوم به',
           subtitle: 'تدفع مبكراً. تحصل على الخصم.',
           body: 'لديك فاتورة بقيمة <strong style="color:var(--n)">JOD {{amount}}</strong> مستحقة بعد <strong style="color:var(--n)">{{days}} يوماً</strong>. موردك مستعد لإعطائك خصماً بنسبة <strong style="color:var(--gd)">{{discount}}</strong> إذا قمت بالدفع في اليوم {{payDay}}. سيولتك المتاحة تحقق حالياً <strong style="color:var(--n)">{{depositRate}}</strong> في البنك.',
-          inputs: 'المعطيات:\n  قيمة الفاتورة = JOD {{amount}}\n  نسبة الخصم = {{discount}}  <span class="cm">(نسبة ثابتة)</span>\n  الدفع في = اليوم {{payDay}}  <span class="cm">(بدلاً من اليوم {{dueDays}})</span>\n  معدل الإيداع = {{depositRate}}/سنة  <span class="cm">(تكلفة الفرصة البديلة)</span>\n  <span class="hi">أيام السداد المبكر = {{dueDays}} - {{payDay}} = {{daysEarly}} يوماً</span>'
+          inputs: 'المعطيات:\n  قيمة الفاتورة = JOD {{amount}}\n  نسبة الخصم = {{discount}}  <span class="cm">(نسبة ثابتة)</span>\n  الدفع في = اليوم {{payDay}}  <span class="cm">(بدلاً من اليوم {{dueDays}})</span>\n  معدل الإيداع = {{depositRate}}/سنة  <span class="cm">(تكلفة الفرصة البديلة)</span>\n  <span class="hi">عدد أيام السداد المبكر: {{daysEarly}} يوماً <bdi class="calc-equation" dir="ltr">({{dueDays}} - {{payDay}})</bdi></span>'
         },
         step2: {
           title: 'الخطوة 2 من 5 - ما الذي تحصل عليه',
