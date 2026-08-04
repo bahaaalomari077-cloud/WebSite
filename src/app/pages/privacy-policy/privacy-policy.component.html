@@ -1,0 +1,21 @@
+<div class="pagehead">
+  <div class="wrap">
+    <div class="crumb">
+      <span>{{ 'privacy.crumb' | translate }}</span> ›
+      <span>{{ 'privacy.pageTitle' | translate }}</span>
+    </div>
+    <h1>{{ 'privacy.pageTitle' | translate }}</h1>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap policy-content">
+    <p class="updated"><em>{{ 'privacy.updated' | translate }}</em></p>
+    <p class="lead">{{ 'privacy.intro' | translate }}</p>
+
+    @for (section of sections(); track $index) {
+      <h2>{{ section.title }}</h2>
+      <div [innerHTML]="section.body"></div>
+    }
+  </div>
+</section>

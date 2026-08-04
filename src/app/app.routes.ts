@@ -10,6 +10,7 @@ import { NewsComponent } from './pages/news/news.component';
 import { ArticlesComponent } from './pages/articles/articles.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { LoginComponent } from './pages/login/login.component';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'news', component: NewsComponent },
   { path: 'articles', component: ArticlesComponent },
   { path: 'article/:id', component: ArticleComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'home' }

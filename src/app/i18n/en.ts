@@ -26,6 +26,7 @@ export const en = {
     signup: 'Sign Up',
     about: 'About',
     location: 'Amman, Jordan',
+    privacyPolicy: 'Privacy Policy',
     copyright: '© 2026 Credit Plus. All rights reserved.',
     tagline: 'Simple • Transparent • Secure'
   },
@@ -126,6 +127,66 @@ export const en = {
       { q: 'How long does it take to receive funds once an invoice is approved?', a: 'Once an invoice is approved on our platform, funds can typically be disbursed within 24 to 48 hours, ensuring you have quick access to the working capital you need.' },
       { q: 'Can I use Credit Plus if my business is located outside Jordan?', a: 'Currently, our platform focuses on businesses within Jordan. However, we are looking to expand to other markets in the MENA region soon.' },
       { q: 'How does Credit Plus ensure transparency and trust among all parties?', a: 'Our platform is built on transparency and trust. We provide real-time tracking of transactions, clear communication, and full visibility into the financing process for all parties involved. We also partner with reputable financial institutions and investors to ensure the highest standards of service.' }
+    ]
+  },
+  privacy: {
+    crumb: 'Credit Plus',
+    pageTitle: 'Privacy Policy',
+    updated: 'Last updated: <TBD: publication date>',
+    intro: 'This Privacy Policy explains what personal data the Credit Plus platform collects, why we collect it, who we share it with, and the choices available to you.',
+    sections: [
+      {
+        title: '1. Who We Are',
+        body: '<p>The Credit Plus supply chain finance platform (the "Platform") — including the Credit Plus web portal and the Credit Plus mobile application — is operated by Al Rahaloon for Information Technology LLC ("Credit Plus", "we", "us"), registered in the Hashemite Kingdom of Jordan. This Policy applies to every user of the Platform, including buyers, suppliers, and their authorized corporate users. Credit Plus is not a bank or a financing provider; the Platform facilitates communication and data exchange between buyers, suppliers, and licensed financing institutions.</p>'
+      },
+      {
+        title: '2. Information We Collect',
+        body: '<p><strong>Account and identity data:</strong> your first and last name, email address, mobile number, and the password you set — stored only as a salted cryptographic hash, never in readable form.</p><p><strong>Company and compliance data:</strong> corporate national ID number, company name and type, registration details retrieved from official registries, and any KYC/AML documents that we or a financing institution are required to collect.</p><p><strong>Financial and transaction data:</strong> invoices and proforma invoices you submit or receive, purchase orders, early-payment requests, the bank account details you add in order to receive financing, and the status history of each request.</p><p><strong>Device and technical data:</strong> when you use the mobile application and enable notifications, we store a Firebase Cloud Messaging registration token together with the device platform (Android or iOS), device model, operating-system version, application version, and the time the device was last seen. We also record IP address, language preference, and activity logs for security and audit purposes.</p><p><strong>Communications:</strong> the notes and comments you submit through the Platform, and records of the notifications, emails, and SMS messages we send you.</p>'
+      },
+      {
+        title: '3. How We Use Your Information',
+        body: '<ul><li>To create and administer your account and verify your identity.</li><li>To operate the core service — submitting, reviewing, sending back, approving, and financing invoices.</li><li>To transmit your financing requests and supporting documents to the banks and financial institutions you deal with.</li><li>To send you one-time passcodes, transactional emails, SMS messages, and push notifications about your requests.</li><li>To meet legal obligations, including KYC, anti-money-laundering, tax, and record-keeping requirements.</li><li>To secure the Platform, detect and prevent fraud or misuse, and maintain audit trails.</li><li>To diagnose technical problems and improve reliability.</li></ul><p>We do not sell your personal data, and we do not use it for third-party advertising.</p>'
+      },
+      {
+        title: '4. Legal Basis and Consent',
+        body: '<p>We process your data on the basis of your consent, the performance of the agreement between you and Credit Plus, our compliance with legal obligations under the laws of the Hashemite Kingdom of Jordan — including the Personal Data Protection Law No. 24 of 2023 — and our legitimate interest in keeping the Platform secure. Where processing depends on your consent, you may withdraw that consent at any time, although doing so may prevent us from continuing to provide the service.</p>'
+      },
+      {
+        title: '5. Sharing and Disclosure',
+        body: '<p>We share personal data only where necessary, and only with:</p><ul><li>Banks and licensed financial institutions, in order to evaluate and execute the financing requests you have submitted.</li><li>The buyer or supplier counterparty to a transaction, limited to the data required to process that transaction.</li><li>Official registries and identity-verification sources, to confirm the company information you provide.</li><li>Service providers acting on our instructions: Google Firebase Cloud Messaging (push-notification delivery), Amazon Web Services (email delivery and hosting), and our SMS gateway provider (one-time passcodes and alerts).</li><li>Competent authorities, courts, or regulators, where disclosure is required by law.</li></ul><p>We do not share your data with any other third party for that party\'s own purposes.</p>'
+      },
+      {
+        title: '6. Push Notifications and Device Data',
+        body: '<p>If you allow notifications, the mobile application registers a Firebase Cloud Messaging token with us so that we can deliver alerts about your invoices and requests — for example, when a buyer sends an invoice back to you for correction. The token identifies the application installation on a device, not you personally, and it is linked to your account only while you are signed in. Signing out detaches the token from your account. You can disable push notifications at any time from your device settings or from your notification preferences inside the application, without losing access to any other part of the service.</p>'
+      },
+      {
+        title: '7. Data Retention',
+        body: '<p>We retain your personal data for as long as your account remains active, and afterwards for the period required to satisfy legal, regulatory, accounting, and audit obligations — &lt;TBD: confirm the retention period with Legal, e.g. "at least 10 years from the end of the relationship for financial records"&gt;. Records are first removed by soft deletion, so that transaction history and audit trails remain intact and verifiable, and are then purged at the end of the retention period. Device tokens are removed as soon as they become invalid or when you sign out.</p>'
+      },
+      {
+        title: '8. Security',
+        body: '<p>We apply technical and organisational measures appropriate to the sensitivity of the data, including encrypted transport (HTTPS/TLS), encryption of sensitive fields at rest, hashed passwords, role- and permission-based access control, session validation, rate limiting on authentication endpoints, and activity logging. No method of electronic transmission or storage is completely secure, and you acknowledge that transmitting data over the internet carries inherent risk.</p>'
+      },
+      {
+        title: '9. Your Rights',
+        body: '<p>Subject to applicable Jordanian law, you may: request access to the personal data we hold about you; request correction of inaccurate or incomplete data; request deletion of data that we are not legally required to retain; object to or ask us to restrict certain processing; withdraw a consent you previously gave; and request a copy of your data in a usable format.</p><p>To exercise any of these rights, contact us at <a href="mailto:support@credit-plus.me">support&#64;credit-plus.me</a> and we will respond within the period required by law. You may also request deletion of your account together with the associated personal data — &lt;TBD: confirm the account-deletion route required by Google Play / App Store: an in-app screen or a support request&gt;.</p>'
+      },
+      {
+        title: '10. Children',
+        body: '<p>The Platform is a business service intended for companies and their authorized representatives. It is not directed at anyone under the age of 18, and we do not knowingly collect personal data from children. If you believe that a child has provided us with personal data, contact us and we will delete it.</p>'
+      },
+      {
+        title: '11. International Transfers',
+        body: '<p>Some of our service providers — including Google and Amazon Web Services — process data on infrastructure located outside the Hashemite Kingdom of Jordan. Where data is transferred abroad, we require the recipient to apply a level of protection consistent with this Policy and with Jordanian law.</p>'
+      },
+      {
+        title: '12. Changes to This Policy',
+        body: '<p>We may update this Privacy Policy from time to time. The current version is always published at this address, and the date shown at the top reflects the most recent change. Where a change is significant, we will notify you through the Platform or by email. Continuing to use the Platform after an update means that you accept the revised Policy.</p>'
+      },
+      {
+        title: '13. Contact Us',
+        body: '<p>Al Rahaloon for Information Technology LLC (Credit Plus)<br>Email: <a href="mailto:support@credit-plus.me">support&#64;credit-plus.me</a><br>Address: &lt;TBD: registered office address&gt;</p><p>For privacy-related requests, please write "Privacy Request" in the subject line.</p>'
+      }
     ]
   },
   about: {
