@@ -1,0 +1,119 @@
+- generic [ref=f6e2]:
+  - generic [ref=f6e5]:
+    - link "🔗 LinkedIn" [ref=f6e7] [cursor=pointer]:
+      - /url: https://www.linkedin.com/company/credit-plus-me/
+    - generic [ref=f6e8]:
+      - link "✉ support@credit-plus.me" [ref=f6e9] [cursor=pointer]:
+        - /url: mailto:support@credit-plus.me
+      - generic [ref=f6e10]:
+        - link "Login" [ref=f6e11] [cursor=pointer]:
+          - /url: https://cp.credit-plus.me/Account/Login
+        - text: /
+        - link "Sign Up" [ref=f6e12] [cursor=pointer]:
+          - /url: https://cp.credit-plus.me/Account/OnBoarding
+      - generic [ref=f6e13]:
+        - button "EN" [ref=f6e14] [cursor=pointer]
+        - button "ع" [ref=f6e15] [cursor=pointer]
+  - banner [ref=f6e17]:
+    - generic [ref=f6e18]:
+      - link [ref=f6e19] [cursor=pointer]:
+        - /url: /home
+        - img "Credit Plus" [ref=f6e20]
+      - navigation [ref=f6e21]:
+        - link "Home" [ref=f6e22] [cursor=pointer]:
+          - /url: /home
+        - link "About Us" [ref=f6e23] [cursor=pointer]:
+          - /url: /about
+        - link "Solutions for Suppliers" [ref=f6e24] [cursor=pointer]:
+          - /url: /suppliers
+        - link "Advantages for Buyers" [ref=f6e25] [cursor=pointer]:
+          - /url: /buyers
+        - link "Calculator" [ref=f6e26] [cursor=pointer]:
+          - /url: /calculator
+        - link "Send Email" [ref=f6e27] [cursor=pointer]:
+          - /url: /contact
+      - link "Login" [ref=f6e29] [cursor=pointer]:
+        - /url: https://cp.credit-plus.me/Account/Login
+  - main [ref=f6e30]:
+    - generic [ref=f6e32]:
+      - heading "Footer Pages" [level=1] [ref=f6e33]
+      - generic [ref=f6e34]:
+        - generic [ref=f6e35]:
+          - generic [ref=f6e36]:
+            - heading "Pages List" [level=2] [ref=f6e37]
+            - paragraph [ref=f6e38]: 0 pages in the footer
+          - button "New Page" [ref=f6e40] [cursor=pointer]
+        - paragraph [ref=f6e41]: No pages yet.
+      - generic [ref=f6e42]:
+        - heading "Add Page" [level=2] [ref=f6e43]
+        - generic [ref=f6e44]:
+          - text: ID (unique, no spaces)
+          - textbox "ID (unique, no spaces)" [ref=f6e45]:
+            - /placeholder: e.g. terms-of-use
+        - generic [ref=f6e46]:
+          - text: Image (optional)
+          - button "Image (optional)" [ref=f6e47]
+        - generic [ref=f6e48]:
+          - text: Title (English)
+          - textbox "Title (English)" [ref=f6e49]:
+            - /placeholder: English title
+        - generic [ref=f6e50]:
+          - text: Title (Arabic)
+          - textbox "Title (Arabic)" [ref=f6e51]:
+            - /placeholder: العنوان بالعربي
+        - heading "Paragraphs" [level=3] [ref=f6e52]
+        - generic [ref=f6e54]:
+          - textbox "Paragraph 1 (English)" [ref=f6e55]
+          - textbox "الفقرة 1 (عربي)" [ref=f6e56]
+        - button "+ Add Paragraph" [ref=f6e57] [cursor=pointer]
+        - button "Save" [ref=f6e58] [cursor=pointer]
+  - contentinfo [ref=f6e60]:
+    - generic [ref=f6e61]:
+      - generic [ref=f6e62]:
+        - generic [ref=f6e63]:
+          - link [ref=f6e65] [cursor=pointer]:
+            - /url: /home
+            - img "Credit Plus" [ref=f6e66]
+          - paragraph [ref=f6e67]: The marketplace for working capital financing — connecting buyers, suppliers and banks on one platform.
+        - generic [ref=f6e68]:
+          - heading "Explore" [level=4] [ref=f6e69]
+          - link "Home" [ref=f6e70] [cursor=pointer]:
+            - /url: /home
+          - link "About" [ref=f6e71] [cursor=pointer]:
+            - /url: /about
+          - link "Solutions for Suppliers" [ref=f6e72] [cursor=pointer]:
+            - /url: /suppliers
+          - link "Advantages for Buyers" [ref=f6e73] [cursor=pointer]:
+            - /url: /buyers
+          - link "Calculator" [ref=f6e74] [cursor=pointer]:
+            - /url: /calculator
+          - link "Send Email" [ref=f6e75] [cursor=pointer]:
+            - /url: /contact
+          - link "Privacy Policy" [ref=f6e76] [cursor=pointer]:
+            - /url: /privacy-policy
+        - generic [ref=f6e77]:
+          - heading "Company" [level=4] [ref=f6e78]
+          - link "News" [ref=f6e79] [cursor=pointer]:
+            - /url: /news
+          - link "Articles" [ref=f6e80] [cursor=pointer]:
+            - /url: /articles
+          - link "Login" [ref=f6e81] [cursor=pointer]:
+            - /url: https://cp.credit-plus.me/Account/Login
+          - link "Sign Up" [ref=f6e82] [cursor=pointer]:
+            - /url: https://cp.credit-plus.me/Account/OnBoarding
+        - generic [ref=f6e83]:
+          - heading "Contact" [level=4] [ref=f6e84]
+          - link "@ support@credit-plus.me" [ref=f6e85] [cursor=pointer]:
+            - /url: mailto:support@credit-plus.me
+            - generic [ref=f6e86]: "@"
+            - generic [ref=f6e87]: support@credit-plus.me
+          - generic [ref=f6e88] [cursor=pointer]: Amman, Jordan
+          - link "in LinkedIn" [ref=f6e91] [cursor=pointer]:
+            - /url: https://www.linkedin.com/company/credit-plus-me/
+            - generic [ref=f6e92]: in
+            - generic [ref=f6e93]: LinkedIn
+          - link "+ Add" [ref=f6e94] [cursor=pointer]:
+            - /url: /pages/manage
+      - generic [ref=f6e95]:
+        - generic [ref=f6e96]: © 2026 Credit Plus. All rights reserved.
+        - generic [ref=f6e97]: Simple • Transparent • Secure

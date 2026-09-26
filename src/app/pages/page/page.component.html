@@ -1,0 +1,30 @@
+<div class="pagehead article-head">
+  <div class="wrap">
+    <div class="crumb">{{ lang.t('article.crumb') }}</div>
+    <h1>{{ view()?.title ?? '' }}</h1>
+  </div>
+</div>
+
+<section class="section article-page">
+  <div class="article-wrap">
+    @if (status() === 'missing') {
+      <div class="article-body"><p>Page not found.</p></div>
+    }
+
+    @if (view(); as v) {
+      @if (v.image) {
+        <img class="article-hero-img page-hero-img" [src]="v.image" [alt]="v.title">
+      }
+
+      <div class="article-body">
+        @for (text of v.paragraphs; track $index) {
+          <p>{{ text }}</p>
+        }
+      </div>
+    }
+
+    <div class="article-actions">
+      <a class="btn btn-outline" routerLink="/home">{{ lang.t('article.backHome') }}</a>
+    </div>
+  </div>
+</section>

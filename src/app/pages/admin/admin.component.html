@@ -5,6 +5,7 @@
     <div class="admin-actions">
       <button type="button" [class.active]="tab === 'news'" (click)="selectType('news')">+ Add News</button>
       <button type="button" [class.active]="tab === 'articles'" (click)="selectType('articles')">+ Add Article</button>
+      <button type="button" [class.active]="tab === 'pages'" (click)="selectType('pages')">+ Add Page</button>
     </div>
   }
 
@@ -12,11 +13,11 @@
     <section class="admin-list">
       <div class="list-head">
         <div>
-          <h2>{{ tab === 'news' ? 'News List' : 'Articles List' }}</h2>
+          <h2>{{ listLabel }}</h2>
           <p>{{ posts().length }} item{{ posts().length === 1 ? '' : 's' }} from database</p>
         </div>
         <div class="head-actions">
-          <button type="button" class="new-btn" (click)="startAdd()">New {{ tab === 'news' ? 'News' : 'Article' }}</button>
+          <button type="button" class="new-btn" (click)="startAdd()">New {{ typeLabel }}</button>
           <button type="button" class="logout-btn" (click)="logout()">Logout</button>
         </div>
       </div>
@@ -25,7 +26,9 @@
         <div class="post-table">
           @for (post of posts(); track post.id) {
             <div class="post-row">
-              <img [src]="imageSrc(post.img)" [alt]="post.title_en || post.id">
+              @if (post.img) {
+                <img [src]="imageSrc(post.img)" [alt]="post.title_en || post.id">
+              }
               <div class="post-main">
                 <strong>{{ post.title_en }}</strong>
                 <span>{{ post.date_en }} · {{ post.id }}</span>
@@ -41,24 +44,26 @@
     </section>
 
     <form (ngSubmit)="submit()" class="admin-form">
-      <h2>{{ editingId ? 'Update' : 'Add' }} {{ tab === 'news' ? 'News' : 'Article' }}</h2>
+      <h2>{{ editingId ? 'Update' : 'Add' }} {{ typeLabel }}</h2>
 
       <div class="row">
         <label>ID (unique, no spaces)<input [(ngModel)]="form.id" name="id" required [readonly]="!!editingId" placeholder="e.g. my-news-2026"></label>
         <label class="image-field">
-          Image
+          Image{{ tab === 'pages' ? ' (optional)' : '' }}
           <input type="file" accept=".jpg,.jpeg,.png,.webp,.svg,image/*" (change)="uploadImage($event)">
-          <input class="image-path" [(ngModel)]="form.img" name="img" required readonly>
+          <input class="image-path" [(ngModel)]="form.img" name="img" [required]="tab !== 'pages'" readonly>
           @if (form.img) {
             <img class="upload-preview" [src]="imageSrc(form.img)" alt="Upload preview">
           }
         </label>
       </div>
 
-      <div class="row">
-        <label>Date (English)<input [(ngModel)]="form.date_en" name="date_en" required placeholder="e.g. June 23, 2026"></label>
-        <label>Date (Arabic)<input [(ngModel)]="form.date_ar" name="date_ar" required placeholder="e.g. 23 حزيران 2026" dir="rtl"></label>
-      </div>
+      @if (tab !== 'pages') {
+        <div class="row">
+          <label>Date (English)<input [(ngModel)]="form.date_en" name="date_en" required placeholder="e.g. June 23, 2026"></label>
+          <label>Date (Arabic)<input [(ngModel)]="form.date_ar" name="date_ar" required placeholder="e.g. 23 حزيران 2026" dir="rtl"></label>
+        </div>
+      }
 
       <label>Title (English)<input [(ngModel)]="form.title_en" name="title_en" required placeholder="English title"></label>
       <label>Title (Arabic)<input [(ngModel)]="form.title_ar" name="title_ar" required placeholder="العنوان بالعربي" dir="rtl"></label>

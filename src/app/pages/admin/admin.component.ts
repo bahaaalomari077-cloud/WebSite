@@ -6,6 +6,8 @@ import { imageSrc } from '../../services/posts.service';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 
+type PostType = 'news' | 'articles' | 'pages';
+
 interface Block { text: string; }
 
 interface PostForm {
@@ -37,8 +39,8 @@ export class AdminComponent {
   private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
 
-  tab: 'news' | 'articles' = 'news';
-  selectedType: 'news' | 'articles' | null = null;
+  tab: PostType = 'news';
+  selectedType: PostType | null = null;
   editingId: string | null = null;
   status = signal<'idle' | 'loading' | 'saving' | 'done' | 'error'>('idle');
   errorMessage = signal('');
@@ -52,6 +54,7 @@ export class AdminComponent {
     this.route.queryParams.subscribe(p => {
       if (p['type'] === 'articles') { this.selectType('articles'); this.showTabs = false; }
       else if (p['type'] === 'news') { this.selectType('news'); this.showTabs = false; }
+      else if (p['type'] === 'pages') { this.selectType('pages'); this.showTabs = false; }
       else {
         this.showTabs = true;
         this.selectType(this.tab);
@@ -59,7 +62,15 @@ export class AdminComponent {
     });
   }
 
-  selectType(type: 'news' | 'articles') {
+  get typeLabel(): string {
+    return this.tab === 'news' ? 'News' : this.tab === 'articles' ? 'Article' : 'Page';
+  }
+
+  get listLabel(): string {
+    return this.tab === 'news' ? 'News List' : this.tab === 'articles' ? 'Articles List' : 'Footer Pages';
+  }
+
+  selectType(type: PostType) {
     this.tab = type;
     this.selectedType = type;
     this.startAdd();
@@ -238,6 +249,15 @@ export class AdminComponent {
   imageSrc(img: string) { return imageSrc(img); }
 
   private validatePayload(payload: PostForm): string | null {
+    if (this.tab === 'pages') {
+      if (!payload.id || !payload.title_en || !payload.title_ar) return 'Fill ID and both titles.';
+      if (/\s/.test(payload.id)) return 'ID cannot contain spaces.';
+      if (payload.img && !/\.(jpg|jpeg|png|webp|svg)$/i.test(payload.img)) {
+        return 'Image filename must end with .jpg, .jpeg, .png, .webp, or .svg.';
+      }
+      return null;
+    }
+
     if (!payload.id || !payload.img || !payload.date_en || !payload.date_ar || !payload.title_en || !payload.title_ar) {
       return 'Fill all required fields.';
     }

@@ -70,47 +70,12 @@ catch (Exception ex)
 
 app.MapGet("/", () => Results.Ok(new { message = "Credit Plus ASP.NET backend is running" }));
 
-app.MapPost("/api/upload", [Authorize] async (HttpRequest request, IWebHostEnvironment environment) =>
-{
-    if (!request.HasFormContentType)
-    {
-        return Results.BadRequest(new { error = "Upload must be multipart/form-data." });
-    }
+app.MapPost("/api/upload", [Authorize] (HttpRequest request, IWebHostEnvironment environment) =>
+    SaveUploadedImage(request, environment, allowSvg: true));
 
-    var form = await request.ReadFormAsync();
-    var file = form.Files["image"];
-
-    if (file is null || file.Length == 0)
-    {
-        return Results.BadRequest(new { error = "Choose an image first." });
-    }
-
-    var extension = Path.GetExtension(file.FileName);
-    var validationError = ValidateImageExtension(extension);
-    if (validationError is not null)
-    {
-        return Results.BadRequest(new { error = validationError });
-    }
-
-    const long maxBytes = 5 * 1024 * 1024;
-    if (file.Length > maxBytes)
-    {
-        return Results.BadRequest(new { error = "Image must be 5MB or smaller." });
-    }
-
-    var uploadRoot = Path.GetFullPath(Path.Combine(environment.ContentRootPath, "..", "public", "uploads"));
-    Directory.CreateDirectory(uploadRoot);
-
-    var baseName = Path.GetFileNameWithoutExtension(file.FileName);
-    var safeName = SanitizeFileName(baseName);
-    var savedName = $"{safeName}-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}{extension.ToLowerInvariant()}";
-    var savedPath = Path.Combine(uploadRoot, savedName);
-
-    await using var stream = File.Create(savedPath);
-    await file.CopyToAsync(stream);
-
-    return Results.Ok(new { img = $"uploads/{savedName}", fileName = savedName });
-});
+// Public upload for footer pages; SVG is excluded because it can carry scripts.
+app.MapPost("/api/pages/upload", (HttpRequest request, IWebHostEnvironment environment) =>
+    SaveUploadedImage(request, environment, allowSvg: false));
 
 app.MapPost("/api/admin/login", async (HttpContext context, LoginRequest credentials, NpgsqlDataSource dataSource) =>
 {
@@ -281,6 +246,78 @@ app.MapDelete("/api/articles/{id}", [Authorize] async (string id, NpgsqlDataSour
     }
 });
 
+app.MapGet("/api/pages", async (NpgsqlDataSource dataSource) =>
+{
+    try
+    {
+        return Results.Ok(await ReadPosts(dataSource, "pages"));
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Failed to load pages");
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+    }
+});
+
+app.MapPost("/api/pages", async (PostRequest page, NpgsqlDataSource dataSource) =>
+{
+    try
+    {
+        var validationError = ValidatePage(page);
+        if (validationError is not null)
+        {
+            return Results.BadRequest(new { error = validationError });
+        }
+
+        await InsertPost(dataSource, "pages", NormalizePage(page));
+        return Results.Ok(new { success = true });
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Failed to create page");
+        if (ex is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            return Results.BadRequest(new { error = "ID already exists. Use a different ID." });
+        }
+
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+    }
+});
+
+app.MapPut("/api/pages/{id}", async (string id, PostRequest page, NpgsqlDataSource dataSource) =>
+{
+    try
+    {
+        var validationError = ValidatePage(page);
+        if (validationError is not null)
+        {
+            return Results.BadRequest(new { error = validationError });
+        }
+
+        var updated = await UpdatePost(dataSource, "pages", id, NormalizePage(page));
+        return updated ? Results.Ok(new { success = true }) : Results.NotFound(new { error = "Page not found." });
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Failed to update page");
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+    }
+});
+
+app.MapDelete("/api/pages/{id}", async (string id, NpgsqlDataSource dataSource) =>
+{
+    try
+    {
+        var deleted = await DeletePost(dataSource, "pages", id);
+        return deleted ? Results.Ok(new { success = true }) : Results.NotFound(new { error = "Page not found." });
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Failed to delete page");
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+    }
+});
+
 app.Run();
 
 static string BuildConnectionString(IConfiguration configuration)
@@ -339,6 +376,18 @@ static async Task EnsureDatabase(NpgsqlDataSource dataSource)
         );
 
         CREATE TABLE IF NOT EXISTS articles (
+          id         VARCHAR(50) PRIMARY KEY,
+          img        VARCHAR(255),
+          date_en    VARCHAR(100),
+          date_ar    VARCHAR(100),
+          title_en   TEXT,
+          title_ar   TEXT,
+          blocks_en  JSONB,
+          blocks_ar  JSONB,
+          sort_order INT DEFAULT 0
+        );
+
+        CREATE TABLE IF NOT EXISTS pages (
           id         VARCHAR(50) PRIMARY KEY,
           img        VARCHAR(255),
           date_en    VARCHAR(100),
@@ -415,6 +464,81 @@ static string? ValidatePost(PostRequest post)
     }
 
     return null;
+}
+
+static async Task<IResult> SaveUploadedImage(HttpRequest request, IWebHostEnvironment environment, bool allowSvg)
+{
+    if (!request.HasFormContentType)
+    {
+        return Results.BadRequest(new { error = "Upload must be multipart/form-data." });
+    }
+
+    var form = await request.ReadFormAsync();
+    var file = form.Files["image"];
+
+    if (file is null || file.Length == 0)
+    {
+        return Results.BadRequest(new { error = "Choose an image first." });
+    }
+
+    var extension = Path.GetExtension(file.FileName);
+    var validationError = ValidateImageExtension(extension);
+    if (validationError is not null)
+    {
+        return Results.BadRequest(new { error = validationError });
+    }
+
+    if (!allowSvg && extension.Equals(".svg", StringComparison.OrdinalIgnoreCase))
+    {
+        return Results.BadRequest(new { error = "Image must be .jpg, .jpeg, .png, or .webp." });
+    }
+
+    const long maxBytes = 5 * 1024 * 1024;
+    if (file.Length > maxBytes)
+    {
+        return Results.BadRequest(new { error = "Image must be 5MB or smaller." });
+    }
+
+    var uploadRoot = Path.GetFullPath(Path.Combine(environment.ContentRootPath, "..", "public", "uploads"));
+    Directory.CreateDirectory(uploadRoot);
+
+    var baseName = Path.GetFileNameWithoutExtension(file.FileName);
+    var safeName = SanitizeFileName(baseName);
+    var savedName = $"{safeName}-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}{extension.ToLowerInvariant()}";
+    var savedPath = Path.Combine(uploadRoot, savedName);
+
+    await using var stream = File.Create(savedPath);
+    await file.CopyToAsync(stream);
+
+    return Results.Ok(new { img = $"uploads/{savedName}", fileName = savedName });
+}
+
+// Footer pages only need an ID and titles; image and date are optional.
+static string? ValidatePage(PostRequest page)
+{
+    if (string.IsNullOrWhiteSpace(page.id) ||
+        string.IsNullOrWhiteSpace(page.title_en) ||
+        string.IsNullOrWhiteSpace(page.title_ar))
+    {
+        return "ID and both titles are required.";
+    }
+
+    if (!string.IsNullOrWhiteSpace(page.img))
+    {
+        return ValidateImageExtension(Path.GetExtension(page.img));
+    }
+
+    return null;
+}
+
+static PostRequest NormalizePage(PostRequest page)
+{
+    return page with
+    {
+        img = page.img ?? "",
+        date_en = page.date_en ?? "",
+        date_ar = page.date_ar ?? ""
+    };
 }
 
 static string? ValidateImageExtension(string extension)

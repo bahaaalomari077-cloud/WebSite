@@ -1,0 +1,73 @@
+<div class="admin-wrap">
+  <h1>Footer Pages</h1>
+
+  <section class="admin-list">
+    <div class="list-head">
+      <div>
+        <h2>Pages List</h2>
+        <p>{{ posts.pages().length }} page{{ posts.pages().length === 1 ? '' : 's' }} in the footer</p>
+      </div>
+      <div class="head-actions">
+        <button type="button" class="new-btn" (click)="startAdd()">New Page</button>
+      </div>
+    </div>
+
+    @if (posts.pages().length) {
+      <div class="post-table">
+        @for (page of posts.pages(); track page.id) {
+          <div class="post-row">
+            @if (page.img) {
+              <img [src]="imageSrc(page.img)" [alt]="page.title_en">
+            }
+            <div class="post-main">
+              <strong><a [routerLink]="['/page', page.id]">{{ page.title_en }}</a></strong>
+              <span>{{ page.title_ar }} · {{ page.id }}</span>
+            </div>
+            <button type="button" class="edit-btn" (click)="editPage(page)">Update</button>
+            <button type="button" class="delete-btn" (click)="deletePage(page)">Delete</button>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-list">No pages yet.</p>
+    }
+  </section>
+
+  <form (ngSubmit)="submit()" class="admin-form">
+    <h2>{{ editingId ? 'Update' : 'Add' }} Page</h2>
+
+    <label>ID (unique, no spaces)<input [(ngModel)]="form.id" name="id" required [readonly]="!!editingId" placeholder="e.g. terms-of-use"></label>
+    <label class="image-field">
+      Image (optional)
+      <input type="file" accept=".jpg,.jpeg,.png,.webp" (change)="uploadImage($event)">
+      @if (form.img) {
+        <img class="upload-preview" [src]="imageSrc(form.img)" alt="Upload preview">
+        <button type="button" class="remove-btn" (click)="removeImage()">x</button>
+      }
+    </label>
+    <label>Title (English)<input [(ngModel)]="form.title_en" name="title_en" required placeholder="English title"></label>
+    <label>Title (Arabic)<input [(ngModel)]="form.title_ar" name="title_ar" required placeholder="العنوان بالعربي" dir="rtl"></label>
+
+    <h3>Paragraphs</h3>
+    @for (block of form.blocks_en; track $index) {
+      <div class="block-row">
+        <div class="block-pair">
+          <textarea [(ngModel)]="form.blocks_en[$index].text" [name]="'ben_' + $index" placeholder="Paragraph {{ $index + 1 }} (English)" rows="3"></textarea>
+          <textarea [(ngModel)]="form.blocks_ar[$index].text" [name]="'bar_' + $index" placeholder="الفقرة {{ $index + 1 }} (عربي)" rows="3" dir="rtl"></textarea>
+        </div>
+        @if (form.blocks_en.length > 1) {
+          <button type="button" class="remove-btn" (click)="removeBlock($index)">x</button>
+        }
+      </div>
+    }
+
+    <button type="button" class="add-btn" (click)="addBlock()">+ Add Paragraph</button>
+
+    @if (status() === 'done')  { <p class="msg success">Saved successfully!</p> }
+    @if (status() === 'error') { <p class="msg error">{{ errorMessage() }}</p> }
+
+    <button type="submit" class="save-btn" [disabled]="status() === 'saving'">
+      {{ status() === 'saving' ? 'Saving...' : (editingId ? 'Update' : 'Save') }}
+    </button>
+  </form>
+</div>

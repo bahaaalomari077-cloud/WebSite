@@ -8,6 +8,8 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { ArticleComponent } from './pages/article/article.component';
 import { NewsComponent } from './pages/news/news.component';
 import { ArticlesComponent } from './pages/articles/articles.component';
+import { PageComponent } from './pages/page/page.component';
+import { PageEditorComponent } from './pages/page-editor/page-editor.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { LoginComponent } from './pages/login/login.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
@@ -24,6 +26,8 @@ export const routes: Routes = [
   { path: 'news', component: NewsComponent },
   { path: 'articles', component: ArticlesComponent },
   { path: 'article/:id', component: ArticleComponent },
+  { path: 'pages/manage', component: PageEditorComponent },
+  { path: 'page/:id', component: PageComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },

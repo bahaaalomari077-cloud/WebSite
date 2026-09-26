@@ -31,6 +31,10 @@
         <a class="contact-item" href="mailto:support@credit-plus.me"><span class="contact-icon email-icon">&#64;</span><span>support&#64;credit-plus.me</span></a>
         <a class="contact-item"><span class="contact-icon jordan-flag"></span><span>{{ 'footer.location' | translate }}</span></a>
         <a class="contact-item" href="https://www.linkedin.com/company/credit-plus-me/"><span class="contact-icon linkedin-icon">in</span><span>LinkedIn</span></a>
+        @for (page of posts.pages(); track page.id) {
+          <a [routerLink]="['/page', page.id]">{{ lang.currentLang() === 'ar' ? page.title_ar : page.title_en }}</a>
+        }
+        <a class="add-page-btn" routerLink="/pages/manage">+ Add</a>
       </div>
     </div>
     <div class="fbot">
