@@ -12,6 +12,7 @@ export interface Post {
   blocks_en?: PostBlock[] | null;
   blocks_ar?: PostBlock[] | null;
   sort_order?: number;
+  images?: string[] | null;
 }
 
 export interface PostBlock {

@@ -28,7 +28,7 @@ export class PageComponent {
     const blocks = (isArabic ? page.blocks_ar : page.blocks_en) ?? [];
     return {
       title: isArabic ? page.title_ar : page.title_en,
-      image: page.img ? imageSrc(page.img) : '',
+      images: (page.images ?? []).map(img => imageSrc(img)),
       paragraphs: blocks.map(block => block.text?.trim() ?? '').filter(text => text)
     };
   });
@@ -46,7 +46,7 @@ export class PageComponent {
             this.seo.setArticle({
               title: view.title,
               description: view.paragraphs[0] || view.title,
-              image: view.image,
+              image: view.images[0] ?? '',
               keywords: 'Credit Plus, ' + view.title
             });
           }

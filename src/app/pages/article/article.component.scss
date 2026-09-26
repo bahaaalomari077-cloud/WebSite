@@ -76,12 +76,47 @@
   }
 }
 
-// Footer pages show the whole image instead of cropping it to 16:10.
-.page-hero-img {
-  aspect-ratio: auto;
-  height: auto;
-  max-height: 640px;
-  max-width: 100%;
-  object-fit: contain;
-  width: auto;
+// Footer page images keep their full size and sit side by side;
+// when they don't fit, the row scrolls sideways instead of shrinking them.
+// Wider than the 780px text column so big images have room.
+.page-gallery {
+  margin: 0 0 34px 50%;
+  transform: translateX(-50%);
+  width: min(1200px, calc(100vw - 32px));
+}
+
+.page-gallery-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+
+  img {
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(18, 32, 95, .13);
+    display: block;
+    flex: none;
+    height: 440px;
+    max-width: 90%;
+    object-fit: contain;
+    scroll-snap-align: start;
+    width: auto;
+  }
+
+  &.single {
+    justify-content: center;
+
+    img {
+      height: auto;
+      max-height: 640px;
+      max-width: 100%;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .page-gallery-row img {
+    height: 300px;
+  }
 }

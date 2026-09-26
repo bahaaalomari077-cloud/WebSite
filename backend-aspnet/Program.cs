@@ -250,7 +250,7 @@ app.MapGet("/api/pages", async (NpgsqlDataSource dataSource) =>
 {
     try
     {
-        return Results.Ok(await ReadPosts(dataSource, "pages"));
+        return Results.Ok(await ReadPages(dataSource));
     }
     catch (Exception ex)
     {
@@ -259,7 +259,7 @@ app.MapGet("/api/pages", async (NpgsqlDataSource dataSource) =>
     }
 });
 
-app.MapPost("/api/pages", async (PostRequest page, NpgsqlDataSource dataSource) =>
+app.MapPost("/api/pages", async (PageRequest page, NpgsqlDataSource dataSource) =>
 {
     try
     {
@@ -269,7 +269,7 @@ app.MapPost("/api/pages", async (PostRequest page, NpgsqlDataSource dataSource) 
             return Results.BadRequest(new { error = validationError });
         }
 
-        await InsertPost(dataSource, "pages", NormalizePage(page));
+        await InsertPage(dataSource, page);
         return Results.Ok(new { success = true });
     }
     catch (Exception ex)
@@ -284,7 +284,7 @@ app.MapPost("/api/pages", async (PostRequest page, NpgsqlDataSource dataSource) 
     }
 });
 
-app.MapPut("/api/pages/{id}", async (string id, PostRequest page, NpgsqlDataSource dataSource) =>
+app.MapPut("/api/pages/{id}", async (string id, PageRequest page, NpgsqlDataSource dataSource) =>
 {
     try
     {
@@ -294,7 +294,7 @@ app.MapPut("/api/pages/{id}", async (string id, PostRequest page, NpgsqlDataSour
             return Results.BadRequest(new { error = validationError });
         }
 
-        var updated = await UpdatePost(dataSource, "pages", id, NormalizePage(page));
+        var updated = await UpdatePage(dataSource, id, page);
         return updated ? Results.Ok(new { success = true }) : Results.NotFound(new { error = "Page not found." });
     }
     catch (Exception ex)
@@ -398,6 +398,13 @@ static async Task EnsureDatabase(NpgsqlDataSource dataSource)
           blocks_ar  JSONB,
           sort_order INT DEFAULT 0
         );
+
+        ALTER TABLE pages ADD COLUMN IF NOT EXISTS images JSONB;
+
+        -- Move single images from before multi-image support into the images list.
+        UPDATE pages
+        SET images = CASE WHEN COALESCE(img, '') = '' THEN '[]'::jsonb ELSE jsonb_build_array(img) END
+        WHERE images IS NULL;
 
         ALTER TABLE news     ADD COLUMN IF NOT EXISTS blocks_en JSONB;
         ALTER TABLE news     ADD COLUMN IF NOT EXISTS blocks_ar JSONB;
@@ -513,8 +520,8 @@ static async Task<IResult> SaveUploadedImage(HttpRequest request, IWebHostEnviro
     return Results.Ok(new { img = $"uploads/{savedName}", fileName = savedName });
 }
 
-// Footer pages only need an ID and titles; image and date are optional.
-static string? ValidatePage(PostRequest page)
+// Footer pages only need an ID and titles; images are optional.
+static string? ValidatePage(PageRequest page)
 {
     if (string.IsNullOrWhiteSpace(page.id) ||
         string.IsNullOrWhiteSpace(page.title_en) ||
@@ -523,22 +530,82 @@ static string? ValidatePage(PostRequest page)
         return "ID and both titles are required.";
     }
 
-    if (!string.IsNullOrWhiteSpace(page.img))
+    foreach (var image in page.images ?? [])
     {
-        return ValidateImageExtension(Path.GetExtension(page.img));
+        var imageError = ValidateImageExtension(Path.GetExtension(image));
+        if (imageError is not null)
+        {
+            return imageError;
+        }
     }
 
     return null;
 }
 
-static PostRequest NormalizePage(PostRequest page)
+static async Task<List<object>> ReadPages(NpgsqlDataSource dataSource)
 {
-    return page with
+    await using var command = dataSource.CreateCommand("""
+        SELECT id, title_en, title_ar, images::text, blocks_en::text, blocks_ar::text, sort_order
+        FROM pages
+        ORDER BY sort_order DESC
+        """);
+
+    await using var reader = await command.ExecuteReaderAsync();
+    var pages = new List<object>();
+
+    while (await reader.ReadAsync())
     {
-        img = page.img ?? "",
-        date_en = page.date_en ?? "",
-        date_ar = page.date_ar ?? ""
-    };
+        pages.Add(new
+        {
+            id = reader.GetString(0),
+            title_en = reader.IsDBNull(1) ? null : reader.GetString(1),
+            title_ar = reader.IsDBNull(2) ? null : reader.GetString(2),
+            images = ReadJson(reader, 3),
+            blocks_en = ReadJson(reader, 4),
+            blocks_ar = ReadJson(reader, 5),
+            sort_order = reader.IsDBNull(6) ? 0 : reader.GetInt32(6)
+        });
+    }
+
+    return pages;
+}
+
+static async Task InsertPage(NpgsqlDataSource dataSource, PageRequest page)
+{
+    await using var command = dataSource.CreateCommand("""
+        INSERT INTO pages (id, title_en, title_ar, images, blocks_en, blocks_ar, sort_order)
+        VALUES (@id, @title_en, @title_ar, @images, @blocks_en, @blocks_ar,
+                (SELECT COALESCE(MAX(sort_order), 0) + 1 FROM pages))
+        """);
+
+    AddPageParameters(command, page.id, page);
+    await command.ExecuteNonQueryAsync();
+}
+
+static async Task<bool> UpdatePage(NpgsqlDataSource dataSource, string id, PageRequest page)
+{
+    await using var command = dataSource.CreateCommand("""
+        UPDATE pages
+        SET title_en = @title_en,
+            title_ar = @title_ar,
+            images = @images,
+            blocks_en = @blocks_en,
+            blocks_ar = @blocks_ar
+        WHERE id = @id
+        """);
+
+    AddPageParameters(command, id, page);
+    return await command.ExecuteNonQueryAsync() > 0;
+}
+
+static void AddPageParameters(NpgsqlCommand command, string id, PageRequest page)
+{
+    command.Parameters.AddWithValue("id", id);
+    command.Parameters.AddWithValue("title_en", page.title_en);
+    command.Parameters.AddWithValue("title_ar", page.title_ar);
+    command.Parameters.AddWithValue("images", NpgsqlDbType.Jsonb, JsonSerializer.Serialize(page.images ?? []));
+    command.Parameters.AddWithValue("blocks_en", NpgsqlDbType.Jsonb, ToJson(page.blocks_en));
+    command.Parameters.AddWithValue("blocks_ar", NpgsqlDbType.Jsonb, ToJson(page.blocks_ar));
 }
 
 static string? ValidateImageExtension(string extension)
@@ -713,6 +780,14 @@ record PostRequest(
     string date_ar,
     string title_en,
     string title_ar,
+    JsonElement? blocks_en,
+    JsonElement? blocks_ar);
+
+record PageRequest(
+    string id,
+    string title_en,
+    string title_ar,
+    string[]? images,
     JsonElement? blocks_en,
     JsonElement? blocks_ar);
 

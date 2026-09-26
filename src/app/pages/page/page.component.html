@@ -12,8 +12,14 @@
     }
 
     @if (view(); as v) {
-      @if (v.image) {
-        <img class="article-hero-img page-hero-img" [src]="v.image" [alt]="v.title">
+      @if (v.images.length) {
+        <div class="page-gallery">
+          <div class="page-gallery-row" [class.single]="v.images.length === 1">
+            @for (src of v.images; track $index) {
+              <img [src]="src" [alt]="v.title">
+            }
+          </div>
+        </div>
       }
 
       <div class="article-body">

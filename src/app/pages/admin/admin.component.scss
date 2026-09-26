@@ -284,3 +284,31 @@
     align-items: flex-start;
   }
 }
+
+// Multi-image picker used by the footer page editor.
+.page-image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 4px 0 18px;
+}
+
+.page-image-item {
+  position: relative;
+
+  img {
+    display: block;
+    height: 110px;
+    width: auto;
+    max-width: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e4e8f4;
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+  }
+}

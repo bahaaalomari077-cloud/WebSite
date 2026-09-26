@@ -34,7 +34,7 @@
         @for (page of posts.pages(); track page.id) {
           <a [routerLink]="['/page', page.id]">{{ lang.currentLang() === 'ar' ? page.title_ar : page.title_en }}</a>
         }
-        <a class="add-page-btn" routerLink="/pages/manage">+ Add</a>
+        <a routerLink="/pages/manage">marketing</a>
       </div>
     </div>
     <div class="fbot">

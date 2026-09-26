@@ -16,8 +16,8 @@
       <div class="post-table">
         @for (page of posts.pages(); track page.id) {
           <div class="post-row">
-            @if (page.img) {
-              <img [src]="imageSrc(page.img)" [alt]="page.title_en">
+            @if (page.images?.length) {
+              <img [src]="imageSrc(page.images![0])" [alt]="page.title_en">
             }
             <div class="post-main">
               <strong><a [routerLink]="['/page', page.id]">{{ page.title_en }}</a></strong>
@@ -38,13 +38,19 @@
 
     <label>ID (unique, no spaces)<input [(ngModel)]="form.id" name="id" required [readonly]="!!editingId" placeholder="e.g. terms-of-use"></label>
     <label class="image-field">
-      Image (optional)
-      <input type="file" accept=".jpg,.jpeg,.png,.webp" (change)="uploadImage($event)">
-      @if (form.img) {
-        <img class="upload-preview" [src]="imageSrc(form.img)" alt="Upload preview">
-        <button type="button" class="remove-btn" (click)="removeImage()">x</button>
-      }
+      Images (optional, you can pick several)
+      <input type="file" multiple accept=".jpg,.jpeg,.png,.webp" (change)="uploadImages($event)">
     </label>
+    @if (form.images.length) {
+      <div class="page-image-list">
+        @for (img of form.images; track $index) {
+          <div class="page-image-item">
+            <img [src]="imageSrc(img)" alt="Image {{ $index + 1 }}">
+            <button type="button" class="remove-btn" (click)="removeImage($index)" title="Remove image">x</button>
+          </div>
+        }
+      </div>
+    }
     <label>Title (English)<input [(ngModel)]="form.title_en" name="title_en" required placeholder="English title"></label>
     <label>Title (Arabic)<input [(ngModel)]="form.title_ar" name="title_ar" required placeholder="العنوان بالعربي" dir="rtl"></label>
 

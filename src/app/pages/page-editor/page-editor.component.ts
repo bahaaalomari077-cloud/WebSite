@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import { concatMap, from } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { Post, PostsService, imageSrc } from '../../services/posts.service';
 
@@ -9,7 +10,7 @@ interface Block { text: string; }
 
 interface PageForm {
   id: string;
-  img: string;
+  images: string[];
   title_en: string;
   title_ar: string;
   blocks_en: Block[];
@@ -49,7 +50,7 @@ export class PageEditorComponent {
     this.errorMessage.set('');
     this.form = {
       id: page.id,
-      img: page.img || '',
+      images: [...(page.images ?? [])],
       title_en: page.title_en || '',
       title_ar: page.title_ar || '',
       blocks_en: this.normalizeBlocks(page.blocks_en),
@@ -85,9 +86,7 @@ export class PageEditorComponent {
     this.errorMessage.set('');
     const payload = {
       id: this.form.id.trim(),
-      img: this.form.img.trim(),
-      date_en: '',
-      date_ar: '',
+      images: this.form.images,
       title_en: this.form.title_en.trim(),
       title_ar: this.form.title_ar.trim(),
       blocks_en: this.form.blocks_en.map(block => ({ text: block.text.trim() })),
@@ -120,34 +119,37 @@ export class PageEditorComponent {
     });
   }
 
-  uploadImage(event: Event) {
+  uploadImages(event: Event) {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+    if (!files.length) return;
 
-    if (!/\.(jpg|jpeg|png|webp)$/i.test(file.name)) {
-      this.errorMessage.set('Image must be .jpg, .jpeg, .png, or .webp.');
+    if (files.some(file => !/\.(jpg|jpeg|png|webp)$/i.test(file.name))) {
+      this.errorMessage.set('Images must be .jpg, .jpeg, .png, or .webp.');
       this.status.set('error');
-      input.value = '';
       return;
     }
 
-    const data = new FormData();
-    data.append('image', file);
     this.status.set('saving');
     this.errorMessage.set('');
 
-    this.api.post<{ img: string }>('/api/pages/upload', data).subscribe({
-      next: result => {
-        this.form.img = result.img;
-        this.status.set('idle');
-      },
-      error: (error: HttpErrorResponse) => this.fail(error)
+    // Upload one after another so the images keep the order they were picked in.
+    from(files).pipe(
+      concatMap(file => {
+        const data = new FormData();
+        data.append('image', file);
+        return this.api.post<{ img: string }>('/api/pages/upload', data);
+      })
+    ).subscribe({
+      next: result => this.form.images.push(result.img),
+      error: (error: HttpErrorResponse) => this.fail(error),
+      complete: () => this.status.set('idle')
     });
   }
 
-  removeImage() {
-    this.form.img = '';
+  removeImage(index: number) {
+    this.form.images.splice(index, 1);
   }
 
   imageSrc(img: string) { return imageSrc(img); }
@@ -164,6 +166,6 @@ export class PageEditorComponent {
   }
 
   private emptyForm(): PageForm {
-    return { id: '', img: '', title_en: '', title_ar: '', blocks_en: [{ text: '' }], blocks_ar: [{ text: '' }] };
+    return { id: '', images: [], title_en: '', title_ar: '', blocks_en: [{ text: '' }], blocks_ar: [{ text: '' }] };
   }
 }
