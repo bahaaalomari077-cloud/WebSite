@@ -31,7 +31,8 @@
     </div>
 
     <div class="article-actions">
-      <a class="btn btn-outline" routerLink="/home">{{ lang.t('article.backHome') }}</a>
+      <a class="btn btn-outline" [routerLink]="cms.pageRouterLink('/article/:id','article.backHome','/home')" [href]="cms.pageHref('/article/:id','article.backHome','/home')">{{ lang.t('article.backHome') }}</a>
     </div>
   </div>
 </section>
+

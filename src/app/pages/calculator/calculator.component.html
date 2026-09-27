@@ -33,7 +33,7 @@
         <div class="ci-sub" data-i18n="calculator.counter.gap_sub">JOD / second difference</div>
       </div>
       <div class="counter-cta">
-        <a class="glow-btn" [routerLink]="[]" [fragment]="'calc-anchor'" style="cursor:pointer">
+        <a class="glow-btn" [routerLink]="cms.pageRouterLink('/calculator','calculator.hero.jump','/calculator#calc-anchor')" [href]="cms.pageHref('/calculator','calculator.hero.jump','/calculator#calc-anchor')" style="cursor:pointer">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
           <span data-i18n="calculator.counter.cta">Calculate your benefit</span>
           <svg class="arrow-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M4 10l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -231,7 +231,7 @@
 <section class="cta">
   <h2 data-i18n="calculator.cta.h">Ready to put your cash to work?</h2>
   <p data-i18n="calculator.cta.p">Book a free 30-minute session with our team. We will map your top suppliers, run the numbers on your actual invoices, and show you a live programme - no obligation.</p>
-  <div class="cta-contact"><span data-i18n="calculator.cta.contact_lbl">Credit Plus</span> &nbsp;&middot;&nbsp; <a [href]="'mailto:' + cms.settings().contactEmail">{{ cms.settings().contactEmail }}</a></div>
+  <div class="cta-contact"><span data-i18n="calculator.cta.contact_lbl">Credit Plus</span> &nbsp;&middot;&nbsp; <a [href]="cms.pageUrl('/calculator','calculator.regulatory.email','mailto:' + cms.settings().contactEmail)">{{ cms.settings().contactEmail }}</a></div>
 </section>
 
 <!-- DISCLAIMER -->
@@ -244,11 +244,13 @@
       <strong>What Credit Plus does:</strong> Credit Plus acts solely as a technology intermediary that connects buyers, suppliers, and regulated financial institutions. Our platform facilitates the management of invoices, purchase orders, early payment programmes, and supply chain finance workflows. We do not hold, receive, transfer, or manage funds on behalf of any party.<br><br>
       <strong>All transactions</strong> are initiated, authorised, processed, and settled exclusively by our licensed banking partners (Housing Bank for Trade &amp; Finance and Ahli Bank Jordan) and wallet partners, under the individual and explicit consent of each buyer and supplier. Credit Plus has no authority to initiate, approve, or execute any payment or financial transaction independently.<br><br>
       <strong>The calculators and financial illustrations</strong> on this page are provided for informational and illustrative purposes only. They do not constitute a financing offer, investment advice, or a commitment of any kind. Actual returns, savings, and terms will depend on programme parameters agreed between the buyer, supplier, and the relevant banking partner. Past performance of similar programmes does not guarantee future results.<br><br>
-      <strong>Credit Plus is a Jordan-registered fintech company</strong> operating in partnership with regulated financial institutions. For questions about our regulatory standing, banking partnerships, or platform terms, please contact us at <a href="mailto:support&#64;credit-plus.me" style="color:var(--b)">support&#64;credit-plus.me</a>.
+      <strong>Credit Plus is a Jordan-registered fintech company</strong> operating in partnership with regulated financial institutions. For questions about our regulatory standing, banking partnerships, or platform terms, please contact us at <a [href]="cms.pageUrl('/calculator','calculator.regulatory.email','mailto:' + cms.settings().contactEmail)" style="color:var(--b)">{{ cms.settings().contactEmail }}</a>.
     </div>
   </div>
 </section>
 
 </div>
+
+
 
 

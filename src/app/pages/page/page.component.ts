@@ -1,8 +1,9 @@
-import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { Post, PostsService, imageSrc } from '../../services/posts.service';
 import { SeoService } from '../../services/seo.service';
+import { CmsContentService } from '../../services/cms-content.service';
 
 @Component({
   selector: 'app-page',
@@ -13,6 +14,7 @@ import { SeoService } from '../../services/seo.service';
 })
 export class PageComponent {
   lang = inject(LanguageService);
+  cms = inject(CmsContentService);
   private route = inject(ActivatedRoute);
   private postsService = inject(PostsService);
   private seo = inject(SeoService);
@@ -56,3 +58,4 @@ export class PageComponent {
     });
   }
 }
+

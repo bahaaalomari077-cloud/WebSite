@@ -1,11 +1,11 @@
 ﻿<header class="site">
   <div class="wrap">
-    <a class="logo" routerLink="/home">
-      <img src="logo-credit-plus-positive-cashflow-transparent.png" alt="{{ 'brand' | translate }}" class="cplogo-img">
+    <a class="logo" [routerLink]="cms.routerTarget(cms.settings().headerLogoUrl)" [href]="cms.externalHref(cms.settings().headerLogoUrl)">
+      <img [src]="cms.settings().headerLogo" alt="{{ 'brand' | translate }}" class="cplogo-img">
     </a>
     <nav class="main" id="navmain" [class.open]="menuOpen">
       @for (link of cms.settings().headerLinks; track link.url) {
-        <a [routerLink]="cms.isInternal(link.url) ? link.url : null" [href]="cms.isInternal(link.url) ? null : link.url" routerLinkActive="active" (click)="menuOpen=false">{{ cms.label(link) }}</a>
+        <a [routerLink]="cms.routerTarget(link.url)" [href]="cms.externalHref(link.url)" routerLinkActive="active" (click)="menuOpen=false">{{ cms.label(link) }}</a>
       }
     </nav>
     <div class="hdr-cta">
@@ -14,3 +14,5 @@
     <button class="menu-btn" (click)="menuOpen = !menuOpen">&#9776;</button>
   </div>
 </header>
+
+

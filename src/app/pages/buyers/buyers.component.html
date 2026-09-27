@@ -1,7 +1,7 @@
-<div class="pagehead">
+﻿<div class="pagehead">
   <div class="wrap">
     <div class="crumb">
-      <span>{{ 'buyers.crumb' | translate }}</span> ›
+      <span>{{ 'buyers.crumb' | translate }}</span> â€º
       <span>{{ 'buyers.pageTitle' | translate }}</span>
     </div>
     <h1>{{ 'buyers.pageHeading' | translate }}</h1>
@@ -94,7 +94,7 @@
     <p class="lead" style="margin-top:1rem">{{ 'buyers.ddLead' | translate }}</p>
     <p class="lead" style="margin-top:1rem">{{ 'buyers.ddIntro' | translate }}</p>
     <div class="hero-cta" style="margin-top:1.6rem">
-      <a class="btn btn-amber" routerLink="/contact">{{ 'buyers.registerInterest' | translate }}</a>
+      <a class="btn btn-amber" [routerLink]="cms.pageRouterLink('/buyers','buyers.dynamic.registerInterest','/contact')" [href]="cms.pageHref('/buyers','buyers.dynamic.registerInterest','/contact')">{{ 'buyers.registerInterest' | translate }}</a>
     </div>
 
     <div class="split" style="margin-top:56px">
@@ -146,7 +146,7 @@
         <h2 style="margin-top:.5rem">{{ 'buyers.ddCalculateTitle' | translate }}</h2>
         <p class="lead" style="margin-top:.8rem">{{ 'buyers.ddCalculateDesc' | translate }}</p>
       </div>
-      <a class="btn btn-amber" routerLink="/calculator">{{ 'buyers.tryCalculator' | translate }}</a>
+      <a class="btn btn-amber" [routerLink]="cms.pageRouterLink('/buyers','buyers.dynamic.calculator','/calculator')" [href]="cms.pageHref('/buyers','buyers.dynamic.calculator','/calculator')">{{ 'buyers.tryCalculator' | translate }}</a>
     </div>
 
     <div class="center" style="margin:56px 0 34px">
@@ -177,7 +177,8 @@
         <h2>{{ 'buyers.ddFinalTitle' | translate }}</h2>
         <p class="lead" style="margin-top:.8rem">{{ 'buyers.ddFinalDesc' | translate }}</p>
       </div>
-      <a class="btn btn-amber" routerLink="/contact">{{ 'buyers.registerInterest' | translate }}</a>
+      <a class="btn btn-amber" [routerLink]="cms.pageRouterLink('/buyers','buyers.final.registerInterest','/contact')" [href]="cms.pageHref('/buyers','buyers.final.registerInterest','/contact')">{{ 'buyers.registerInterest' | translate }}</a>
     </div>
   </div>
 </section>
+

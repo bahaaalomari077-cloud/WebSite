@@ -1,8 +1,9 @@
-import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { Post, PostBlock, PostsService, imageSrc } from '../../services/posts.service';
 import { SeoService } from '../../services/seo.service';
+import { CmsContentService } from '../../services/cms-content.service';
 
 type ArticleBlock =
   | { type: 'p'; text: string }
@@ -26,6 +27,7 @@ interface ArticleData {
 })
 export class ArticleComponent {
   lang = inject(LanguageService);
+  cms = inject(CmsContentService);
   currentLang = this.lang.currentLang;
   private route = inject(ActivatedRoute);
   private postsService = inject(PostsService);
@@ -94,3 +96,4 @@ export class ArticleComponent {
     });
   }
 }
+

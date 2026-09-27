@@ -1,46 +1,39 @@
-<footer class="site">
+﻿<footer class="site">
   <div class="wrap">
     <div class="cols">
       <div class="footer-brand">
         <div class="flogo">
-          <a class="logo" routerLink="/home">
-            <img src="footer-credit-plus-logo-transparent.png" alt="{{ 'brand' | translate }}" class="footer-logo-img">
+          <a class="logo" [routerLink]="cms.routerTarget(cms.settings().footerLogoUrl)" [href]="cms.externalHref(cms.settings().footerLogoUrl)">
+            <img [src]="cms.settings().footerLogo" alt="{{ 'brand' | translate }}" class="footer-logo-img">
           </a>
         </div>
         <p class="desc">{{ cms.text(cms.settings().footerDescription) }}</p>
       </div>
       <div>
         <h4>{{ 'footer.explore' | translate }}</h4>
-        @for (link of cms.settings().headerLinks; track link.url) {
-          <a [routerLink]="cms.isInternal(link.url) ? link.url : null" [href]="cms.isInternal(link.url) ? null : link.url">{{ cms.label(link) }}</a>
-        }
-        @for (link of cms.settings().footerLinks; track link.url) {
-          @if (link.url !== '/news' && link.url !== '/articles') {
-            <a [routerLink]="cms.isInternal(link.url) ? link.url : null" [href]="cms.isInternal(link.url) ? null : link.url">{{ cms.label(link) }}</a>
-          }
+        @for (link of cms.footerLinksFor('Explore'); track link.url) {
+          <a [routerLink]="cms.routerTarget(link.url)" [href]="cms.externalHref(link.url)">{{ cms.label(link) }}</a>
         }
       </div>
       <div>
         <h4>{{ 'footer.company' | translate }}</h4>
-        @for (link of cms.settings().footerLinks; track link.url) {
-          @if (link.url === '/news' || link.url === '/articles') {
-            <a [routerLink]="link.url">{{ cms.label(link) }}</a>
-          }
+        @for (link of cms.footerLinksFor('Company'); track link.url) {
+          <a [routerLink]="cms.routerTarget(link.url)" [href]="cms.externalHref(link.url)">{{ cms.label(link) }}</a>
         }
-        <a [href]="cms.settings().loginUrl">{{ 'footer.login' | translate }}</a>
-        <a [href]="cms.settings().signupUrl">{{ 'footer.signup' | translate }}</a>
       </div>
       <div>
         <h4>{{ 'footer.contact' | translate }}</h4>
         <a class="contact-item" [href]="'mailto:' + cms.settings().contactEmail"><span class="contact-icon email-icon">&#64;</span><span>{{ cms.settings().contactEmail }}</span></a>
-        <a class="contact-item"><span class="contact-icon jordan-flag"></span><span>{{ lang.currentLang() === 'ar' ? cms.settings().address.ar : cms.settings().address.en }}</span></a>
+        <a class="contact-item" [href]="cms.settings().addressMapUrl" target="_blank" rel="noopener"><span class="contact-icon jordan-flag"></span><span>{{ lang.currentLang() === 'ar' ? cms.settings().address.ar : cms.settings().address.en }}</span></a>
         @for (link of cms.settings().socialLinks; track link.url) {
           <a class="contact-item" [href]="link.url" target="_blank" rel="noopener"><span class="contact-icon linkedin-icon">in</span><span>{{ cms.label(link) }}</span></a>
         }
         @for (page of posts.pages(); track page.id) {
           <a [routerLink]="['/page', page.id]">{{ lang.currentLang() === 'ar' ? page.title_ar : page.title_en }}</a>
         }
-        <a routerLink="/pages/manage">marketing</a>
+        @for (link of cms.footerLinksFor('Contact'); track link.url) {
+          <a [routerLink]="cms.routerTarget(link.url)" [href]="cms.externalHref(link.url)">{{ cms.label(link) }}</a>
+        }
       </div>
     </div>
     <div class="fbot">

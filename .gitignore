@@ -1,4 +1,4 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+﻿# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
 /dist
@@ -50,3 +50,7 @@ Thumbs.db
 
 # Orchard Core local content database and setup files
 /orchard-cms/**/App_Data/
+
+# Orchard Core generated image cache
+/orchard-cms/**/wwwroot/Default/
+

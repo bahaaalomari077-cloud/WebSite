@@ -1,7 +1,7 @@
-<div class="pagehead">
+﻿<div class="pagehead">
   <div class="wrap">
     <div class="crumb">
-      <span>{{ 'about.crumb' | translate }}</span> ›
+      <span>{{ 'about.crumb' | translate }}</span> â€º
       <span>{{ 'about.pageTitle' | translate }}</span>
     </div>
     <h1>{{ 'about.pageTitle' | translate }}</h1>
@@ -17,7 +17,7 @@
       <h2>{{ 'about.headline' | translate }}</h2>
       <p class="lead" style="margin-top:1rem">{{ 'about.desc1' | translate }}</p>
       <p class="lead" style="margin-top:1rem">{{ 'about.desc2' | translate }}</p>
-      <a class="btn btn-primary" href="Credit-Plus-Company-Profile-2025.pdf" download="Credit-Plus-Company-Profile-2025.pdf" style="margin-top:1.6rem">{{ 'about.download' | translate }}</a>
+      <a class="btn btn-primary" [href]="cms.pageUrl('/about','about.companyProfile.download','Credit-Plus-Company-Profile-2025.pdf')" download="Credit-Plus-Company-Profile-2025.pdf" style="margin-top:1.6rem">{{ 'about.download' | translate }}</a>
     </div>
   </div>
 </section>
@@ -26,20 +26,21 @@
   <div class="wrap">
     <div class="cards">
       <div class="card">
-        <div class="ic">🔗</div>
+        <div class="ic">ðŸ”—</div>
         <h3>{{ 'about.c1Title' | translate }}</h3>
         <p>{{ 'about.c1Desc' | translate }}</p>
       </div>
       <div class="card">
-        <div class="ic amber">⚙️</div>
+        <div class="ic amber">âš™ï¸</div>
         <h3>{{ 'about.c2Title' | translate }}</h3>
         <p>{{ 'about.c2Desc' | translate }}</p>
       </div>
       <div class="card">
-        <div class="ic navy">🛡️</div>
+        <div class="ic navy">ðŸ›¡ï¸</div>
         <h3>{{ 'about.c3Title' | translate }}</h3>
         <p>{{ 'about.c3Desc' | translate }}</p>
       </div>
     </div>
   </div>
 </section>
+

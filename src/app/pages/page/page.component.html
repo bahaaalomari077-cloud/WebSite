@@ -1,4 +1,4 @@
-<div class="pagehead article-head">
+﻿<div class="pagehead article-head">
   <div class="wrap">
     <div class="crumb">{{ lang.t('article.crumb') }}</div>
     <h1>{{ view()?.title ?? '' }}</h1>
@@ -30,7 +30,8 @@
     }
 
     <div class="article-actions">
-      <a class="btn btn-outline" routerLink="/home">{{ lang.t('article.backHome') }}</a>
+      <a class="btn btn-outline" [routerLink]="cms.pageRouterLink('/page/:id','customPage.backHome','/home')" [href]="cms.pageHref('/page/:id','customPage.backHome','/home')">{{ lang.t('article.backHome') }}</a>
     </div>
   </div>
 </section>
+

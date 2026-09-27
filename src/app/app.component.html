@@ -1,10 +1,18 @@
-@if (!isAdminRoute) {
+﻿@if (!isAdminRoute) {
   <app-topbar></app-topbar>
   <app-header></app-header>
+}
+@if (!isAdminRoute) {
+  <app-page-elements placement="top"></app-page-elements>
 }
 <main>
   <router-outlet></router-outlet>
 </main>
 @if (!isAdminRoute) {
+  <app-page-elements placement="bottom"></app-page-elements>
+}
+@if (!isAdminRoute) {
   <app-footer></app-footer>
 }
+
+

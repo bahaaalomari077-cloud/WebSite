@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Data.Migration;
+using OrchardCore.Navigation;
 using OrchardCore.Modules;
 using CreditPlus.SiteContent.Migrations;
 
@@ -12,6 +13,7 @@ public sealed class Startup : StartupBase
     public override void ConfigureServices(IServiceCollection services)
     {
         services.AddScoped<IDataMigration, SiteContentMigrations>();
+        services.AddNavigationProvider<AdminMenu>();
     }
 
     public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider)
@@ -23,3 +25,4 @@ public sealed class Startup : StartupBase
             defaults: new { controller = "SiteSettings", action = "Get" });
     }
 }
+

@@ -1,0 +1,25 @@
+﻿@if (items.length) {
+  <section class="cms-page-placements" [class.at-top]="placement === 'top'" aria-label="Page contact details and links">
+    @for (item of items; track item.id) {
+      <div class="cms-page-item">
+        @if (item.elementType.toLowerCase() === 'phone') {
+          <span class="cms-item-icon" aria-hidden="true">☎</span>
+          <div class="cms-item-copy">
+            @if (cms.label(item)) { <strong>{{ cms.label(item) }}</strong> }
+            <a [href]="'tel:' + item.value" dir="ltr">{{ item.value }}</a>
+          </div>
+        } @else {
+          <span class="cms-item-icon" aria-hidden="true">↗</span>
+          <div class="cms-item-copy">
+            @if (cms.label(item)) { <strong>{{ cms.label(item) }}</strong> }
+            @if (cms.isInternal(item.value)) {
+              <a [routerLink]="item.value">{{ item.value }}</a>
+            } @else {
+              <a [href]="item.value" target="_blank" rel="noopener">{{ item.value }}</a>
+            }
+          </div>
+        }
+      </div>
+    }
+  </section>
+}

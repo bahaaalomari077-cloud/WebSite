@@ -1,45 +1,41 @@
 ﻿# Orchard Core CMS
 
-The Credit Plus Angular site reads published contact details and links from Orchard Core.
+The Credit Plus Angular site reads its shared settings, logos, navigation links, and page-specific phone/link items from Orchard Core.
 
 ## Run locally
 
-From the site folder, start Orchard Core:
+From the site folder, run **dotnet run --project orchard-cms/CreditPlus.Cms.Web/CreditPlus.Cms.Web.csproj** to start Orchard, then run **npm start** in another terminal for Angular.
 
-\`\`\`powershell
-dotnet run --project orchard-cms/CreditPlus.Cms.Web/CreditPlus.Cms.Web.csproj
-\`\`\`
+Open the website at http://localhost:4200 and Orchard admin at http://localhost:3001/Admin. The Angular proxy forwards /cms-api and /cms-media to Orchard on port 3001.
 
-In another terminal, start Angular:
+## Manage the logos
 
-\`\`\`powershell
-npm start
-\`\`\`
+Open Content → Content Items → Credit Plus Site Settings. The Header logo and Footer logo fields use Orchard's Media Picker. The current Credit Plus logo images are already in Orchard's Media Library under the credit-plus folder. Upload replacement files in Media → Media Library, then select them in the settings item and publish.
 
-Open the site at \`http://localhost:4200\` and Orchard admin at \`http://localhost:3001/Admin\`. The Angular development proxy forwards \`/cms-api\` to Orchard's read-only endpoint at \`http://localhost:3001/cms-api/site-settings\`.
+## Add a phone number or link to any page
 
-## Edit site details
+Open Content → Content Items → New → Page Phone or Link. Create one item for each phone number or link:
 
-In Orchard admin, open **Content → Content Items** and edit **Credit Plus Site Settings**. This item contains the email, contact page phone numbers, Arabic and English address and contact intro, footer description, and login and signup URLs. Publish the item after changes.
+- Title: English label shown on the page
+- Page path: the route to show it on, for example /about or /contact
+- Type: Phone or Link
+- English label and Arabic label: optional display text
+- Phone number or URL: a phone number for Phone, or a local route/full URL for Link
+- Position: Top or Bottom
+- Display order: numeric ordering when a page has multiple items
 
-## Edit header, footer, and social links
+Dynamic routes can use a parameter, for example /article/:id. The website displays each published item only on matching routes.
 
-In **Content → Content Items**, choose **Site Link** in the content type filter. The existing links are individual content items, so each can be edited, unpublished, or deleted. Use **New → Site Link** to add another.
+## Manage shared site content
 
-Each item uses:
+In Content → Content Items, edit Credit Plus Site Settings for the support email, Contact Us phone numbers, bilingual address and intro, footer description, and login/signup URLs. Publish after changes.
 
-- **Title**: English label
-- **Arabic label**: Arabic label
-- **Link URL**: internal route such as \`/contact\`, or a full external URL
-- **Location**: \`Header\`, \`Footer\`, or \`Social\`
-- **Display order**: numeric position within that location
+To edit the header, footer, or social links, filter Content Items by Site Link. Each link is an individual item. Location is Header, Footer, or Social; the title is its English label and Arabic label is its Arabic label.
 
-The CMS is prefilled with the current Credit Plus navigation and footer links, LinkedIn, support email, two contact page phone numbers, Amman address, and login/signup links. The phone numbers remain on the Contact Us page and are not shown in the footer.
+The existing two phone numbers are kept on the Contact Us page and do not appear in the footer.
 
 ## Orchard Core tools
 
-Orchard's built-in Media, Menu, Navigation, Content Preview, and Queries features are enabled. SEO, Sitemaps, Content Localization, Audit Trail, and Workflows are also enabled. They are available from the standard Orchard admin menus; SEO adds metadata editing, Sitemaps generates a sitemap, Content Localization supports localized content items, Audit Trail records admin changes, and Workflows provides visual automation.
+Media, Menu, Navigation, Content Preview, Queries, SEO, Sitemaps, Content Localization, Audit Trail, and Workflows are enabled.
 
-The local database and tenant data are stored under \`orchard-cms/App_Data\` and are ignored by Git. Back up that folder to preserve CMS content and its administrator account. The local administrator is \`siteadmin\`; change its password from the Orchard user menu after signing in.
-
-For deployment, forward \`/cms-api\` to the Orchard service over HTTPS and keep the Orchard admin behind HTTPS.
+The local database and tenant content are stored under orchard-cms/CreditPlus.Cms.Web/App_Data and are ignored by Git. Back up that folder to retain CMS content and its administrator account.

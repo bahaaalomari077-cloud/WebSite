@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SeoService } from '../../services/seo.service';
+import { CmsContentService } from '../../services/cms-content.service';
 
 @Component({
   selector: 'app-buyers',
@@ -11,6 +12,7 @@ import { SeoService } from '../../services/seo.service';
   styleUrl: './buyers.component.scss'
 })
 export class BuyersComponent {
+  cms = inject(CmsContentService);
   constructor() {
     inject(SeoService).set({
       title:       'For Buyers',
@@ -19,3 +21,5 @@ export class BuyersComponent {
     });
   }
 }
+
+

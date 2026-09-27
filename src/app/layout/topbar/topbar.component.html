@@ -1,6 +1,6 @@
 ﻿<div class="topbar">
   <div class="wrap">
-    <div class="tb-left"><a [href]="cms.settings().linkedInUrl">{{ 'topbar.linkedin' | translate }}</a></div>
+    <div class="tb-left">@if (cms.settings().socialLinks[0]; as social) { <a [href]="social.url" target="_blank" rel="noopener">{{ cms.label(social) }}</a> } @else { <a [href]="cms.settings().linkedInUrl">{{ 'topbar.linkedin' | translate }}</a> }</div>
     <div class="tb-right">
       <a [href]="'mailto:' + cms.settings().contactEmail" dir="ltr">&#9993; {{ cms.settings().contactEmail }}</a>
       <span class="auth-links">
@@ -15,3 +15,4 @@
     </div>
   </div>
 </div>
+

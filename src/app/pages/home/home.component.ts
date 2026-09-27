@@ -1,9 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { PostsService, Post, imageSrc } from '../../services/posts.service';
 import { SeoService } from '../../services/seo.service';
+import { CmsContentService } from '../../services/cms-content.service';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +17,7 @@ export class HomeComponent {
   private langSvc = inject(LanguageService);
   private postsSvc = inject(PostsService);
   private seo       = inject(SeoService);
+  cms = inject(CmsContentService);
   currentLang = this.langSvc.currentLang;
   faqOpen: number | null = null;
 
@@ -48,3 +50,4 @@ export class HomeComponent {
   getDate(post: Post)  { return this.currentLang() === 'ar' ? post.date_ar  : post.date_en;  }
   imageSrc(post: Post) { return imageSrc(post.img); }
 }
+

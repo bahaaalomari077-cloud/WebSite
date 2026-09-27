@@ -2,6 +2,7 @@
 <PropertyGroup><TargetFramework>net10.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><OrchardCoreModule>true</OrchardCoreModule></PropertyGroup>
 <ItemGroup>
 <PackageReference Include="OrchardCore.Module.Targets" Version="3.0.1" />
+  <PackageReference Include="OrchardCore.Admin" Version="3.0.1" />
 <PackageReference Include="OrchardCore.ContentManagement.Abstractions" Version="3.0.1" />
 <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="3.0.1" />
 <PackageReference Include="OrchardCore.ContentTypes" Version="3.0.1" />
@@ -10,3 +11,4 @@
 <PackageReference Include="YesSql.Abstractions" Version="5.4.7" />
 </ItemGroup>
 </Project>
+
