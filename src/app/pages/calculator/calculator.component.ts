@@ -3,6 +3,7 @@ import { Component, ViewEncapsulation, AfterViewInit, OnDestroy, inject, effect 
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '../../services/language.service';
 import { SeoService } from '../../services/seo.service';
+import { CmsContentService } from '../../services/cms-content.service';
 
 @Component({
   selector: 'app-calculator',
@@ -14,6 +15,7 @@ import { SeoService } from '../../services/seo.service';
 })
 export class CalculatorComponent implements AfterViewInit, OnDestroy {
   lang = inject(LanguageService);
+  cms = inject(CmsContentService);
   currentLang = this.lang.currentLang;
   private _setLang: any;
   private _selMode: any;
@@ -142,7 +144,7 @@ export class CalculatorComponent implements AfterViewInit, OnDestroy {
       var contactTxt = ct('steps.contact');
       if(cur>0){var bb=document.createElement('button');bb.className='back-btn';bb.textContent=backTxt;bb.onclick=function(){m==='dd'?(dds--,ddR()):(dpos--,dpoR());};el.appendChild(bb);}
       if(cur<tot-1){var nb=document.createElement('button');nb.className='next-btn';nb.innerHTML=nextTxt+' <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';nb.onclick=function(){m==='dd'?(dds++,ddR()):(dpos++,dpoR());};el.appendChild(nb);}
-      else{var ab=document.createElement('a');ab.className='ask-btn';ab.href='mailto:support@credit-plus.me?subject=Credit%20Plus%20Question';ab.innerHTML=contactTxt+' <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';el.appendChild(ab);}
+      else{var ab=document.createElement('a');ab.className='ask-btn';ab.href='mailto:'+__self.cms.settings().contactEmail+'?subject=Credit%20Plus%20Question';ab.innerHTML=contactTxt+' <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';el.appendChild(ab);}
     }
     function ddR(){
       var v=ddV(),r=ddCalc(v),steps=ddSteps;
@@ -258,3 +260,4 @@ export class CalculatorComponent implements AfterViewInit, OnDestroy {
     requestAnimationFrame(tick);
   }
 }
+

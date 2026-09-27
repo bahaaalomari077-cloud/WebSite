@@ -1,12 +1,12 @@
 ﻿<div class="topbar">
   <div class="wrap">
-    <div class="tb-left"><a href="https://www.linkedin.com/company/credit-plus-me/">{{ 'topbar.linkedin' | translate }}</a></div>
+    <div class="tb-left"><a [href]="cms.settings().linkedInUrl">{{ 'topbar.linkedin' | translate }}</a></div>
     <div class="tb-right">
-      <a href="mailto:support@credit-plus.me" dir="ltr">&#9993; support&#64;credit-plus.me</a>
+      <a [href]="'mailto:' + cms.settings().contactEmail" dir="ltr">&#9993; {{ cms.settings().contactEmail }}</a>
       <span class="auth-links">
-        <a href="https://cp.credit-plus.me/Account/Login">{{ 'topbar.login' | translate }}</a>
+        <a [href]="cms.settings().loginUrl">{{ 'topbar.login' | translate }}</a>
         <span>/</span>
-        <a href="https://cp.credit-plus.me/Account/OnBoarding">{{ 'topbar.signup' | translate }}</a>
+        <a [href]="cms.settings().signupUrl">{{ 'topbar.signup' | translate }}</a>
       </span>
       <div class="langtog">
         <button (click)="lang.setLang('en')" [class.active]="lang.currentLang() === 'en'">EN</button>

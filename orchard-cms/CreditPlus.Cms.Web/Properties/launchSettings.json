@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "CreditPlus.Cms.Web": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:3001",
+      "environmentVariables": { "ASPNETCORE_ENVIRONMENT": "Development" }
+    }
+  }
+}

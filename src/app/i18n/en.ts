@@ -1,4 +1,4 @@
-export const en = {
+﻿export const en = {
   brand: 'Credit Plus',
   nav: {
     home: 'Home',
@@ -6,7 +6,7 @@ export const en = {
     suppliers: 'Solutions for Suppliers',
     buyers: 'Advantages for Buyers',
     calculator: 'Calculator',
-    contact: 'Send Email',
+    contact: 'Contact Us',
     login: 'Login'
   },
   topbar: {
@@ -32,7 +32,7 @@ export const en = {
   },
   contact: {
     crumb: 'Credit Plus',
-    pageTitle: 'Send Email',
+    pageTitle: 'Contact Us',
     tag: 'Contact With Us',
     heading: 'Leave a Message',
     intro: "We'd love to hear from you. For inquiries, partnerships, or support, feel free to reach out using the details below.",
@@ -659,3 +659,5 @@ export const en = {
     }
   }
 };
+
+

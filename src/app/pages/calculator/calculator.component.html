@@ -231,7 +231,7 @@
 <section class="cta">
   <h2 data-i18n="calculator.cta.h">Ready to put your cash to work?</h2>
   <p data-i18n="calculator.cta.p">Book a free 30-minute session with our team. We will map your top suppliers, run the numbers on your actual invoices, and show you a live programme - no obligation.</p>
-  <div class="cta-contact"><span data-i18n="calculator.cta.contact_lbl">Credit Plus</span> &nbsp;&middot;&nbsp; <a href="mailto:support&#64;credit-plus.me">support&#64;credit-plus.me</a></div>
+  <div class="cta-contact"><span data-i18n="calculator.cta.contact_lbl">Credit Plus</span> &nbsp;&middot;&nbsp; <a [href]="'mailto:' + cms.settings().contactEmail">{{ cms.settings().contactEmail }}</a></div>
 </section>
 
 <!-- DISCLAIMER -->
@@ -250,3 +250,5 @@
 </section>
 
 </div>
+
+

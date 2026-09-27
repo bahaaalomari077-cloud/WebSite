@@ -47,3 +47,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Orchard Core local content database and setup files
+/orchard-cms/**/App_Data/

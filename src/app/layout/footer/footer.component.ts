@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { PostsService } from '../../services/posts.service';
+import { CmsContentService } from '../../services/cms-content.service';
 
 @Component({
   selector: 'app-footer',
@@ -14,6 +15,7 @@ import { PostsService } from '../../services/posts.service';
 export class FooterComponent {
   lang = inject(LanguageService);
   posts = inject(PostsService);
+  cms = inject(CmsContentService);
 
   constructor() {
     this.posts.refreshPages();

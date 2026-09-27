@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { LanguageService } from '../../services/language.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { CmsContentService } from '../../services/cms-content.service';
 
 @Component({
   selector: 'app-topbar',
@@ -11,4 +12,5 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 })
 export class TopbarComponent {
   lang = inject(LanguageService);
+  cms = inject(CmsContentService);
 }

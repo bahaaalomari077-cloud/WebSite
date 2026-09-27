@@ -9,7 +9,7 @@ export const ar: typeof en = {
     suppliers: 'حلول للموردين',
     buyers: 'مزايا للمشترين',
     calculator: 'الحاسبة',
-    contact: 'إرسال إيميل',
+    contact: 'تواصل معنا',
     login: 'تسجيل الدخول'
   },
   topbar: {
@@ -36,7 +36,7 @@ export const ar: typeof en = {
   },
   contact: {
     crumb: 'كريدت بلس',
-    pageTitle: 'إرسال إيميل',
+    pageTitle: 'تواصل معنا',
     tag: 'تواصل معنا',
     heading: 'اترك رسالة',
     intro: 'يسعدنا التواصل معك. للاستفسارات أو الشراكات أو الدعم، يمكنك مراسلتنا من خلال التفاصيل أدناه.',
@@ -668,3 +668,5 @@ export const ar: typeof en = {
     }
   }
 };
+
+

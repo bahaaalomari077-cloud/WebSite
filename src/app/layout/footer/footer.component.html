@@ -7,30 +7,36 @@
             <img src="footer-credit-plus-logo-transparent.png" alt="{{ 'brand' | translate }}" class="footer-logo-img">
           </a>
         </div>
-        <p class="desc">{{ 'footer.desc' | translate }}</p>
+        <p class="desc">{{ cms.text(cms.settings().footerDescription) }}</p>
       </div>
       <div>
         <h4>{{ 'footer.explore' | translate }}</h4>
-        <a routerLink="/home">{{ 'nav.home' | translate }}</a>
-        <a routerLink="/about">{{ 'footer.about' | translate }}</a>
-        <a routerLink="/suppliers">{{ 'nav.suppliers' | translate }}</a>
-        <a routerLink="/buyers">{{ 'nav.buyers' | translate }}</a>
-        <a routerLink="/calculator">{{ 'nav.calculator' | translate }}</a>
-        <a routerLink="/contact">{{ 'nav.contact' | translate }}</a>
-        <a routerLink="/privacy-policy">{{ 'footer.privacyPolicy' | translate }}</a>
+        @for (link of cms.settings().headerLinks; track link.url) {
+          <a [routerLink]="cms.isInternal(link.url) ? link.url : null" [href]="cms.isInternal(link.url) ? null : link.url">{{ cms.label(link) }}</a>
+        }
+        @for (link of cms.settings().footerLinks; track link.url) {
+          @if (link.url !== '/news' && link.url !== '/articles') {
+            <a [routerLink]="cms.isInternal(link.url) ? link.url : null" [href]="cms.isInternal(link.url) ? null : link.url">{{ cms.label(link) }}</a>
+          }
+        }
       </div>
       <div>
         <h4>{{ 'footer.company' | translate }}</h4>
-        <a routerLink="/news">{{ 'footer.news'     | translate }}</a>
-        <a routerLink="/articles">{{ 'footer.articles' | translate }}</a>
-        <a href="https://cp.credit-plus.me/Account/Login">{{ 'footer.login'    | translate }}</a>
-        <a href="https://cp.credit-plus.me/Account/OnBoarding">{{ 'footer.signup'   | translate }}</a>
+        @for (link of cms.settings().footerLinks; track link.url) {
+          @if (link.url === '/news' || link.url === '/articles') {
+            <a [routerLink]="link.url">{{ cms.label(link) }}</a>
+          }
+        }
+        <a [href]="cms.settings().loginUrl">{{ 'footer.login' | translate }}</a>
+        <a [href]="cms.settings().signupUrl">{{ 'footer.signup' | translate }}</a>
       </div>
       <div>
         <h4>{{ 'footer.contact' | translate }}</h4>
-        <a class="contact-item" href="mailto:support@credit-plus.me"><span class="contact-icon email-icon">&#64;</span><span>support&#64;credit-plus.me</span></a>
-        <a class="contact-item"><span class="contact-icon jordan-flag"></span><span>{{ 'footer.location' | translate }}</span></a>
-        <a class="contact-item" href="https://www.linkedin.com/company/credit-plus-me/"><span class="contact-icon linkedin-icon">in</span><span>LinkedIn</span></a>
+        <a class="contact-item" [href]="'mailto:' + cms.settings().contactEmail"><span class="contact-icon email-icon">&#64;</span><span>{{ cms.settings().contactEmail }}</span></a>
+        <a class="contact-item"><span class="contact-icon jordan-flag"></span><span>{{ lang.currentLang() === 'ar' ? cms.settings().address.ar : cms.settings().address.en }}</span></a>
+        @for (link of cms.settings().socialLinks; track link.url) {
+          <a class="contact-item" [href]="link.url" target="_blank" rel="noopener"><span class="contact-icon linkedin-icon">in</span><span>{{ cms.label(link) }}</span></a>
+        }
         @for (page of posts.pages(); track page.id) {
           <a [routerLink]="['/page', page.id]">{{ lang.currentLang() === 'ar' ? page.title_ar : page.title_en }}</a>
         }
@@ -39,7 +45,7 @@
     </div>
     <div class="fbot">
       <span>{{ 'footer.copyright' | translate }}</span>
-      <span>{{ 'footer.tagline'   | translate }}</span>
+      <span>{{ 'footer.tagline' | translate }}</span>
     </div>
   </div>
 </footer>
