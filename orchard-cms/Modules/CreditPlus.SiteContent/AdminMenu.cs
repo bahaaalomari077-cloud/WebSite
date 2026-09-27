@@ -18,17 +18,28 @@ public sealed class AdminMenu : INavigationProvider
 
         builder.Add(_localizer["Credit Plus"], "CreditPlusSite", site => site
             .Add(_localizer["Site settings — logo, email and phones"], "SiteSettings", item => item
-                .Action("ContentItems", "Admin", new { area = "OrchardCore.Contents", contentTypeId = "SiteSettings" }))
+                .Url("/Admin/Contents/ContentItems?contentTypeId=SiteSettings"))
             .Add(_localizer["Header links"], "HeaderLinks", item => item
-                .Action("ContentItems", "Admin", new { area = "OrchardCore.Contents", contentTypeId = "HeaderLink" }))
+                .Url("/Admin/Contents/ContentItems?contentTypeId=HeaderLink"))
             .Add(_localizer["Footer links"], "FooterLinks", item => item
-                .Action("ContentItems", "Admin", new { area = "OrchardCore.Contents", contentTypeId = "FooterLink" }))
+                .Url("/Admin/Contents/ContentItems?contentTypeId=FooterLink"))
             .Add(_localizer["Social links"], "SocialLinks", item => item
-                .Action("ContentItems", "Admin", new { area = "OrchardCore.Contents", contentTypeId = "SocialLink" }))
-            .Add(_localizer["Page links — buttons and destinations"], "PageLinks", item => item
-                .Action("ContentItems", "Admin", new { area = "OrchardCore.Contents", contentTypeId = "PageLink" }))
+                .Url("/Admin/Contents/ContentItems?contentTypeId=SocialLink"))
+            .Add(_localizer["Page links by page"], "PageLinks", pages => pages
+                .Add(_localizer["Home page"], "HomePageLinks", item => item
+                    .Url("/Admin/Contents/ContentItems?contentTypeId=HomePageLinks"))
+                .Add(_localizer["About page"], "AboutPageLinks", item => item
+                    .Url("/Admin/Contents/ContentItems?contentTypeId=AboutPageLinks"))
+                .Add(_localizer["Buyers page"], "BuyersPageLinks", item => item
+                    .Url("/Admin/Contents/ContentItems?contentTypeId=BuyersPageLinks"))
+                .Add(_localizer["Calculator page"], "CalculatorPageLinks", item => item
+                    .Url("/Admin/Contents/ContentItems?contentTypeId=CalculatorPageLinks"))
+                .Add(_localizer["Article pages"], "ArticlePageLinks", item => item
+                    .Url("/Admin/Contents/ContentItems?contentTypeId=ArticlePageLinks"))
+                .Add(_localizer["Custom pages"], "CustomPageLinks", item => item
+                    .Url("/Admin/Contents/ContentItems?contentTypeId=CustomPageLinks")))
             .Add(_localizer["Page phone and extra links"], "PagePlacements", item => item
-                .Action("ContentItems", "Admin", new { area = "OrchardCore.Contents", contentTypeId = "PagePlacement" })));
+                .Url("/Admin/Contents/ContentItems?contentTypeId=PagePlacement")));
 
         return ValueTask.CompletedTask;
     }

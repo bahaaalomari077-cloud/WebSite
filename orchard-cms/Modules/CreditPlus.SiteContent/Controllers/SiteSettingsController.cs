@@ -36,9 +36,20 @@ public sealed class SiteSettingsController : ControllerBase
 
         string? MediaUrl(string key)
         {
-            var paths = part?[key]?["Paths"] as JsonArray;
+            var mediaField = part?[key] ?? part?[char.ToLowerInvariant(key[0]) + key[1..]];
+            var pathsNode = mediaField?["Paths"] ?? mediaField?["paths"];
+            var paths = pathsNode as JsonArray;
+            if (paths is null && pathsNode is JsonValue pathsValue && pathsValue.TryGetValue<string>(out var serializedPaths))
+            {
+                paths = JsonNode.Parse(serializedPaths) as JsonArray;
+            }
+
             var firstPath = paths?.FirstOrDefault();
-            var path = firstPath is JsonValue pathValue ? pathValue.GetValue<string>() : null;
+            var path = firstPath is JsonObject mediaItem
+                ? mediaItem["path"]?.ToString() ?? mediaItem["Path"]?.ToString()
+                : firstPath is JsonValue pathValue && pathValue.TryGetValue<string>(out var selectedPath)
+                    ? selectedPath
+                    : null;
             if (string.IsNullOrWhiteSpace(path)) return null;
 
             var encodedPath = string.Join("/", path.Trim('/').Split('/').Select(Uri.EscapeDataString));
@@ -130,29 +141,30 @@ public sealed class SiteSettingsController : ControllerBase
 
     private async Task<object[]> ReadPageLinksAsync()
     {
-        var items = await _session.Query<ContentItem, ContentItemIndex>(
-            x => x.ContentType == "PageLink" && x.Published).ListAsync();
-
-        return items.Select(item =>
+        var links = new List<object>();
+        foreach (var definition in GroupedPageLinks)
         {
-            var part = item.Content["PageLinkPart"];
-            string? Text(string key) => part?[key]?["Text"]?.ToString();
-            return new
+            var item = await _session.Query<ContentItem, ContentItemIndex>(
+                x => x.ContentType == definition.ContentType && x.Published).FirstOrDefaultAsync();
+            if (item is null) continue;
+
+            await _contentManager.LoadAsync(item);
+            var part = item.Content[definition.PartName];
+            string? url = part?[definition.FieldName]?["Text"]?.ToString();
+            if (string.IsNullOrWhiteSpace(url)) continue;
+
+            links.Add(new
             {
-                pagePath = Text("PagePath") ?? "",
-                linkKey = Text("LinkKey") ?? "",
-                labelEn = item.Content["TitlePart"]?["Title"]?.ToString() ?? item.DisplayText,
-                labelAr = Text("LabelAr") ?? "",
-                url = Text("Url") ?? "",
-                sortOrder = int.TryParse(Text("SortOrder"), out var order) ? order : 0
-            };
-        })
-        .Where(link => !string.IsNullOrWhiteSpace(link.pagePath) &&
-                       !string.IsNullOrWhiteSpace(link.linkKey) &&
-                       !string.IsNullOrWhiteSpace(link.url))
-        .OrderBy(link => link.sortOrder)
-        .Cast<object>()
-        .ToArray();
+                pagePath = definition.PagePath,
+                linkKey = definition.LinkKey,
+                labelEn = definition.LabelEn,
+                labelAr = definition.LabelAr,
+                url,
+                sortOrder = definition.SortOrder
+            });
+        }
+
+        return links.ToArray();
     }
 
     private async Task<object[]> ReadPagePlacementsAsync()
@@ -185,5 +197,31 @@ public sealed class SiteSettingsController : ControllerBase
         .ToArray();
     }
 
+    private static readonly PageLinkDefinition[] GroupedPageLinks =
+    [
+        new("HomePageLinks", "HomePageLinksPart", "/home", "SuppliersButtonUrl", "home.hero.suppliers", "Home — Hero: Suppliers button", "الرئيسية — زر الموردين", 1),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "BuyersButtonUrl", "home.hero.buyers", "Home — Hero: Buyers button", "الرئيسية — زر المشترين", 2),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "InstitutionsButtonUrl", "home.hero.institutions", "Home — Hero: Financial institutions button", "الرئيسية — زر المؤسسات المالية", 3),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "BuyersCardUrl", "home.solutions.buyers", "Home — Solutions: Buyers card", "الرئيسية — بطاقة المشترين", 4),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "SuppliersCardUrl", "home.solutions.suppliers", "Home — Solutions: Suppliers card", "الرئيسية — بطاقة الموردين", 5),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "InstitutionsCardUrl", "home.solutions.banks", "Home — Solutions: Financial institutions card", "الرئيسية — بطاقة المؤسسات المالية", 6),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "DynamicDiscountingCardUrl", "home.solutions.dynamicDiscounting", "Home — Solutions: Dynamic discounting card", "الرئيسية — بطاقة الخصم الديناميكي", 7),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "SuppliersLearnMoreUrl", "home.suppliers.learnMore", "Home — Suppliers: Learn more button", "الرئيسية — زر اعرف المزيد للموردين", 8),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "BuyersLearnMoreUrl", "home.buyers.learnMore", "Home — Buyers: Learn more button", "الرئيسية — زر اعرف المزيد للمشترين", 9),
+        new("HomePageLinks", "HomePageLinksPart", "/home", "AboutButtonUrl", "home.cta.about", "Home — Final: About button", "الرئيسية — الزر الختامي لمن نحن", 10),
+        new("AboutPageLinks", "AboutPageLinksPart", "/about", "CompanyProfileDownloadUrl", "about.companyProfile.download", "About — Download company profile", "من نحن — تنزيل ملف الشركة", 1),
+        new("BuyersPageLinks", "BuyersPageLinksPart", "/buyers", "DynamicRegisterInterestUrl", "buyers.dynamic.registerInterest", "Buyers — Dynamic discounting: Register interest", "المشترون — الخصم الديناميكي: سجل اهتمامك", 1),
+        new("BuyersPageLinks", "BuyersPageLinksPart", "/buyers", "DynamicCalculatorUrl", "buyers.dynamic.calculator", "Buyers — Dynamic discounting: Calculator", "المشترون — الخصم الديناميكي: الحاسبة", 2),
+        new("BuyersPageLinks", "BuyersPageLinksPart", "/buyers", "FinalRegisterInterestUrl", "buyers.final.registerInterest", "Buyers — Final: Register interest", "المشترون — الزر الختامي للتسجيل", 3),
+        new("CalculatorPageLinks", "CalculatorPageLinksPart", "/calculator", "JumpToCalculatorUrl", "calculator.hero.jump", "Calculator — Jump to calculator", "الحاسبة — الانتقال إلى الحاسبة", 1),
+        new("CalculatorPageLinks", "CalculatorPageLinksPart", "/calculator", "ContactByEmailUrl", "calculator.final.contact", "Calculator — Ask us by email", "الحاسبة — تواصل معنا عبر البريد", 2),
+        new("CalculatorPageLinks", "CalculatorPageLinksPart", "/calculator", "RegulatoryNoticeEmailUrl", "calculator.regulatory.email", "Calculator — Regulatory notice email", "الحاسبة — بريد التواصل في التنويه", 3),
+        new("ArticlePageLinks", "ArticlePageLinksPart", "/article/:id", "BackHomeUrl", "article.backHome", "Article — Back to Home button", "المقال — زر العودة للرئيسية", 1),
+        new("CustomPageLinks", "CustomPageLinksPart", "/page/:id", "BackHomeUrl", "customPage.backHome", "Custom page — Back to Home button", "صفحة مخصصة — زر العودة للرئيسية", 1)
+    ];
+
+    private sealed record PageLinkDefinition(
+        string ContentType, string PartName, string PagePath, string FieldName,
+        string LinkKey, string LabelEn, string LabelAr, int SortOrder);
     private sealed record ManagedLink(string LabelEn, string LabelAr, string Url, string Section, int SortOrder);
 }

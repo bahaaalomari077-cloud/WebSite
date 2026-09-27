@@ -5,6 +5,12 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backend-aspnet", "backend-aspnet\backend-aspnet.csproj", "{565C6877-CF66-41CA-A8E2-36C708F539D7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orchard-cms", "orchard-cms", "{CD87CD04-99F2-9585-30C9-BD553656BF2E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{07B6BA8C-442E-F4DA-17EF-E024373BD7D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditPlus.SiteContent", "orchard-cms\Modules\CreditPlus.SiteContent\CreditPlus.SiteContent.csproj", "{63866543-0F1A-434B-AFC8-3F2F3A15D367}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +33,24 @@ Global
 		{565C6877-CF66-41CA-A8E2-36C708F539D7}.Release|x64.Build.0 = Release|Any CPU
 		{565C6877-CF66-41CA-A8E2-36C708F539D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{565C6877-CF66-41CA-A8E2-36C708F539D7}.Release|x86.Build.0 = Release|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Debug|x64.Build.0 = Debug|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Debug|x86.Build.0 = Debug|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Release|x64.ActiveCfg = Release|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Release|x64.Build.0 = Release|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Release|x86.ActiveCfg = Release|Any CPU
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{07B6BA8C-442E-F4DA-17EF-E024373BD7D2} = {CD87CD04-99F2-9585-30C9-BD553656BF2E}
+		{63866543-0F1A-434B-AFC8-3F2F3A15D367} = {07B6BA8C-442E-F4DA-17EF-E024373BD7D2}
 	EndGlobalSection
 EndGlobal

@@ -132,18 +132,120 @@ public sealed class SiteContentMigrations : DataMigration
         return 6;
     }
 
+    public async Task<int> UpdateFrom6Async()
+    {
+        await EnsureSiteSettingsLinkFieldsAsync();
+        await RemoveObsoletePageLinkAsync("buyers.final.calculator");
+        return 7;
+    }
+
+    public async Task<int> UpdateFrom7Async()
+    {
+        await EnsureGroupedPageLinkTypesAsync();
+        await MigratePageLinksIntoPageItemsAsync();
+        return 8;
+    }
+
+    public async Task<int> UpdateFrom8Async()
+    {
+        await EnsureSiteSettingsLinkFieldsAsync();
+        await EnsureDefaultLogosAsync();
+        return 9;
+    }
+
+    private async Task EnsureGroupedPageLinkTypesAsync()
+    {
+        foreach (var group in PageLinkGroups)
+        {
+            await _definitions.AlterTypeDefinitionAsync(group.ContentType, type => type
+                .WithDisplayName(group.DisplayName).Creatable().Listable()
+                .WithPart("TitlePart").WithPart(group.PartName));
+
+            await _definitions.AlterPartDefinitionAsync(group.PartName, part =>
+            {
+                foreach (var field in group.Fields)
+                {
+                    part.WithField(field.FieldName, definition => definition
+                        .OfType("TextField").WithDisplayName(field.DisplayName));
+                }
+            });
+        }
+    }
+
+    private async Task MigratePageLinksIntoPageItemsAsync()
+    {
+        var oldItems = await _session.Query<ContentItem, ContentItemIndex>(
+            x => x.ContentType == "PageLink" && x.Published).ListAsync();
+        var destinations = PageLinkGroups.ToDictionary(
+            group => group.ContentType,
+            group => group.Fields.ToDictionary(field => field.LinkKey, field => field.DefaultUrl, StringComparer.Ordinal),
+            StringComparer.Ordinal);
+
+        foreach (ContentItem oldItem in oldItems)
+        {
+            await _contentManager.LoadAsync(oldItem);
+            var oldPart = oldItem.Content["PageLinkPart"];
+            var key = oldPart?["LinkKey"]?["Text"]?.ToString();
+            var url = oldPart?["Url"]?["Text"]?.ToString();
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(url)) continue;
+
+            var group = PageLinkGroups.FirstOrDefault(candidate => candidate.Fields.Any(field => field.LinkKey == key));
+            if (group is not null) destinations[group.ContentType][key] = url;
+        }
+
+        foreach (var group in PageLinkGroups)
+        {
+            var item = await _session.Query<ContentItem, ContentItemIndex>(
+                x => x.ContentType == group.ContentType && x.Published).FirstOrDefaultAsync();
+            var isNew = item is null;
+            item ??= await _contentManager.NewAsync(group.ContentType);
+            if (isNew)
+            {
+                item.DisplayText = group.DisplayName;
+                item.Content["TitlePart"] = new JsonObject { ["Title"] = group.DisplayName };
+            }
+
+            var part = item.Content[group.PartName] as JsonObject ?? new JsonObject();
+            foreach (var field in group.Fields)
+            {
+                var existing = part[field.FieldName]?["Text"]?.ToString();
+                if (string.IsNullOrWhiteSpace(existing))
+                {
+                    part[field.FieldName] = Field(destinations[group.ContentType][field.LinkKey]);
+                }
+            }
+            item.Content[group.PartName] = part;
+
+            if (isNew)
+            {
+                await _contentManager.CreateAsync(item, VersionOptions.Published);
+            }
+            else
+            {
+                await _contentManager.UpdateAsync(item);
+            }
+        }
+
+        foreach (ContentItem oldItem in oldItems)
+        {
+            await _contentManager.RemoveAsync(oldItem);
+        }
+    }
+
     private async Task EnsureDefaultLogosAsync()
     {
         var settings = await _session.Query<ContentItem, ContentItemIndex>(x => x.ContentType == "SiteSettings" && x.Published).FirstOrDefaultAsync();
         if (settings is null) return;
 
         await _contentManager.LoadAsync(settings);
-        dynamic part = settings.Content["SiteSettingsPart"];
+        var part = settings.Content["SiteSettingsPart"] as JsonObject;
+        if (part is null) return;
         EnsureMediaField(part, "HeaderLogo", "credit-plus/header-logo.png", "Credit Plus header logo");
         EnsureMediaField(part, "FooterLogo", "credit-plus/footer-logo.png", "Credit Plus footer logo");
         await _contentManager.UpdateAsync(settings);
+        await _contentManager.PublishAsync(settings);
     }
-    private static void EnsureMediaField(dynamic part, string fieldName, string path, string altText)
+    private static void EnsureMediaField(JsonObject part, string fieldName, string path, string altText)
     {
         JsonArray? paths = part[fieldName]?["Paths"] as JsonArray;
         var selectedPath = paths?.FirstOrDefault()?.ToString();
@@ -237,10 +339,15 @@ public sealed class SiteContentMigrations : DataMigration
         await _contentManager.LoadAsync(settings);
         var part = settings.Content["SiteSettingsPart"] as JsonObject;
         if (part is null) return;
-        part["HeaderLogoUrl"] ??= Field("/home");
-        part["FooterLogoUrl"] ??= Field("/home");
-        part["AddressMapUrl"] ??= Field("https://www.google.com/maps/search/?api=1&query=King+Hussein+Business+Park+Amman+Jordan");
+        string? Text(string key) => part[key]?["Text"]?.ToString();
+        if (string.IsNullOrWhiteSpace(Text("HeaderLogoUrl"))) part["HeaderLogoUrl"] = Field("/home");
+        if (string.IsNullOrWhiteSpace(Text("FooterLogoUrl"))) part["FooterLogoUrl"] = Field("/home");
+        if (string.IsNullOrWhiteSpace(Text("AddressMapUrl")))
+        {
+            part["AddressMapUrl"] = Field("https://www.google.com/maps/search/?api=1&query=King+Hussein+Business+Park+Amman+Jordan");
+        }
         await _contentManager.UpdateAsync(settings);
+        await _contentManager.PublishAsync(settings);
     }
 
     private async Task EnsureManagedLinkTypesAsync()
@@ -334,8 +441,12 @@ public sealed class SiteContentMigrations : DataMigration
     private async Task SeedFooterLinksAsync()
     {
         var existing = await _session.Query<ContentItem, ContentItemIndex>(x => x.ContentType == "FooterLink" && x.Published).ListAsync();
-        var existingTitles = existing.Select(x => x.Content["TitlePart"]?["Title"]?.ToString() ?? x.DisplayText)
-            .ToHashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var existingTitles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (ContentItem existingItem in existing)
+        {
+            var title = existingItem.Content["TitlePart"]?["Title"]?.ToString() ?? existingItem.DisplayText;
+            if (!string.IsNullOrWhiteSpace(title)) existingTitles.Add(title);
+        }
         var seeds = new[]
         {
             new LinkSeed("Home", "الرئيسية", "/home", "Explore", 1),
@@ -366,6 +477,21 @@ public sealed class SiteContentMigrations : DataMigration
                 ["SortOrder"] = Field(seed.SortOrder.ToString())
             };
             await _contentManager.CreateAsync(item, VersionOptions.Published);
+        }
+    }
+
+    private async Task RemoveObsoletePageLinkAsync(string linkKey)
+    {
+        var links = await _session.Query<ContentItem, ContentItemIndex>(
+            x => x.ContentType == "PageLink" && x.Published).ListAsync();
+        foreach (ContentItem link in links)
+        {
+            await _contentManager.LoadAsync(link);
+            var key = link.Content["PageLinkPart"]?["LinkKey"]?["Text"]?.ToString();
+            if (string.Equals(key, linkKey, StringComparison.Ordinal))
+            {
+                await _contentManager.RemoveAsync(link);
+            }
         }
     }
 
@@ -407,7 +533,6 @@ public sealed class SiteContentMigrations : DataMigration
             new PageLinkSeed("/buyers", "buyers.dynamic.registerInterest", "Buyers — Dynamic discounting: Register interest", "المشترون — الخصم الديناميكي: سجل اهتمامك", "/contact", 1),
             new PageLinkSeed("/buyers", "buyers.dynamic.calculator", "Buyers — Dynamic discounting: Calculator", "المشترون — الخصم الديناميكي: الحاسبة", "/calculator", 2),
             new PageLinkSeed("/buyers", "buyers.final.registerInterest", "Buyers — Final: Register interest", "المشترون — الزر الختامي للتسجيل", "/contact", 3),
-            new PageLinkSeed("/buyers", "buyers.final.calculator", "Buyers — Final: Calculator", "المشترون — الزر الختامي للحاسبة", "/calculator", 4),
             new PageLinkSeed("/calculator", "calculator.hero.jump", "Calculator — Jump to calculator", "الحاسبة — الانتقال إلى الحاسبة", "/calculator#calc-anchor", 1),
             new PageLinkSeed("/calculator", "calculator.final.contact", "Calculator — Ask us by email", "الحاسبة — تواصل معنا عبر البريد", "mailto:support@credit-plus.me?subject=Credit%20Plus%20Question", 2),
             new PageLinkSeed("/calculator", "calculator.regulatory.email", "Calculator — Regulatory notice email", "الحاسبة — بريد التواصل في التنويه", "mailto:support@credit-plus.me", 3),
@@ -440,14 +565,49 @@ public sealed class SiteContentMigrations : DataMigration
         ["MediaTexts"] = new JsonArray { JsonValue.Create(altText) }
     };
 
+    private static readonly PageLinkGroup[] PageLinkGroups =
+    [
+        new("HomePageLinks", "Home page links", "HomePageLinksPart", "/home",
+        [
+            new("home.hero.suppliers", "Hero — Suppliers button", "SuppliersButtonUrl", "/suppliers"),
+            new("home.hero.buyers", "Hero — Buyers button", "BuyersButtonUrl", "/buyers"),
+            new("home.hero.institutions", "Hero — Financial institutions button", "InstitutionsButtonUrl", "/about"),
+            new("home.solutions.buyers", "Solutions — Buyers card", "BuyersCardUrl", "/buyers"),
+            new("home.solutions.suppliers", "Solutions — Suppliers card", "SuppliersCardUrl", "/suppliers"),
+            new("home.solutions.banks", "Solutions — Financial institutions card", "InstitutionsCardUrl", "/about"),
+            new("home.solutions.dynamicDiscounting", "Solutions — Dynamic discounting card", "DynamicDiscountingCardUrl", "/buyers#dynamic-discounting"),
+            new("home.suppliers.learnMore", "Suppliers — Learn more button", "SuppliersLearnMoreUrl", "/suppliers"),
+            new("home.buyers.learnMore", "Buyers — Learn more button", "BuyersLearnMoreUrl", "/buyers"),
+            new("home.cta.about", "Closing section — About button", "AboutButtonUrl", "/about")
+        ]),
+        new("AboutPageLinks", "About page links", "AboutPageLinksPart", "/about",
+        [
+            new("about.companyProfile.download", "Download company profile", "CompanyProfileDownloadUrl", "/Credit-Plus-Company-Profile-2025.pdf")
+        ]),
+        new("BuyersPageLinks", "Buyers page links", "BuyersPageLinksPart", "/buyers",
+        [
+            new("buyers.dynamic.registerInterest", "Dynamic discounting — Register interest", "DynamicRegisterInterestUrl", "/contact"),
+            new("buyers.dynamic.calculator", "Dynamic discounting — Calculator", "DynamicCalculatorUrl", "/calculator"),
+            new("buyers.final.registerInterest", "Closing section — Register interest", "FinalRegisterInterestUrl", "/contact")
+        ]),
+        new("CalculatorPageLinks", "Calculator page links", "CalculatorPageLinksPart", "/calculator",
+        [
+            new("calculator.hero.jump", "Jump to calculator", "JumpToCalculatorUrl", "/calculator#calc-anchor"),
+            new("calculator.final.contact", "Ask us by email", "ContactByEmailUrl", "mailto:support@credit-plus.me?subject=Credit%20Plus%20Question"),
+            new("calculator.regulatory.email", "Regulatory notice email", "RegulatoryNoticeEmailUrl", "mailto:support@credit-plus.me")
+        ]),
+        new("ArticlePageLinks", "Article page links", "ArticlePageLinksPart", "/article/:id",
+        [
+            new("article.backHome", "Back to Home button", "BackHomeUrl", "/home")
+        ]),
+        new("CustomPageLinks", "Custom page links", "CustomPageLinksPart", "/page/:id",
+        [
+            new("customPage.backHome", "Back to Home button", "BackHomeUrl", "/home")
+        ])
+    ];
+
+    private sealed record PageLinkGroup(string ContentType, string DisplayName, string PartName, string PagePath, PageLinkField[] Fields);
+    private sealed record PageLinkField(string LinkKey, string DisplayName, string FieldName, string DefaultUrl);
     private sealed record LinkSeed(string LabelEn, string LabelAr, string Url, string Placement, int SortOrder);
     private sealed record PageLinkSeed(string PagePath, string LinkKey, string LabelEn, string LabelAr, string Url, int SortOrder);
 }
-
-
-
-
-
-
-
-
