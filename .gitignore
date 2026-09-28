@@ -54,3 +54,10 @@ Thumbs.db
 # Orchard Core generated image cache
 /orchard-cms/**/wwwroot/Default/
 
+
+# Playwright MCP test screenshots and snapshots
+/.playwright-mcp/
+
+# Zipped build output
+/dist.zip
+/publish/**/*.zip

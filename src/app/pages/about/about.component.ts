@@ -15,7 +15,7 @@ export class AboutComponent {
   constructor() {
     inject(SeoService).set({
       title:       'About Us',
-      description: 'Learn about Credit Plus â€” the Supply Chain Finance platform built for Jordan and the Middle East, backed by JOPACC and trusted by leading banks.',
+      description: 'Learn about Credit Plus — the Supply Chain Finance platform built for Jordan and the Middle East, backed by JOPACC and trusted by leading banks.',
       keywords:    'about Credit Plus, SCF Jordan, fintech company, JOPACC, supply chain'
     });
   }
